@@ -1,0 +1,2 @@
+C:\Users\disckord\Desktop\Physics for games\Workspace\aieBootstrap-master\temp\Bootstrap\x64\Debug\Bootstrap.lib
+C:\Users\disckord\Desktop\Physics for games\Workspace\aieBootstrap-master\temp\Bootstrap\x64\Debug\Bootstrap.pdb
