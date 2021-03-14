@@ -1,0 +1,20 @@
+﻿  Application3D.cpp
+  FlyCamera.cpp
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\FlyCamera.cpp(22,79): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\FlyCamera.cpp(23,79): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\FlyCamera.cpp(24,83): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+  main.cpp
+  Generating Code...
+  Project3D.vcxproj -> C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\temp\3DGraphics\x64\Debug\3DGraphics.exe
