@@ -2,7 +2,7 @@
 
 MouseHelper* MouseHelper::instance = nullptr;
 
-void MouseHelper::update(int windowCenterX, int windowCenterY, int newMouseX, int newMouseY)
+void MouseHelper::update(float windowCenterX, float windowCenterY, float newMouseX, float newMouseY)
 {
 	xDelta = newMouseX - windowCenterX;
 	yDelta = newMouseY - windowCenterY;

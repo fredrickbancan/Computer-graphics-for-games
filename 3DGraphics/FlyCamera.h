@@ -6,7 +6,7 @@ class FlyCamera : public Camera
 public:
 	FlyCamera(glm::vec3 pos) : Camera(pos) {};
 	~FlyCamera();
-	virtual void onFixedUpdate(float timeStep) override;
+	virtual void onWorldFixedUpdate(float timeStep) override;
 	virtual void onUpdate(float ptnt, float deltaTime) override; 
 	float getMoveSpeed() { return moveSpeed; }
 	float setMoveSpeed(float ms) { moveSpeed  = ms; }

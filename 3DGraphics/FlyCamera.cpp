@@ -5,9 +5,9 @@ FlyCamera::~FlyCamera()
 {
 }
 
-void FlyCamera::onFixedUpdate(float timeStep)
+void FlyCamera::onWorldFixedUpdate(float timeStep)
 {
-	Camera::onFixedUpdate(timeStep);
+	Camera::onWorldFixedUpdate(timeStep);
 	position += frontVec * moveVec.z * moveSpeed * timeStep;
 	position += rightVec * moveVec.x * moveSpeed * timeStep;
 	position.y += moveVec.y * moveSpeed * timeStep;
@@ -29,11 +29,11 @@ void FlyCamera::onUpdate(float ptnt, float deltaTime)
 
 	if (pitch >= 90.0F)
 	{
-		pitch = 89.0F;
+		pitch = 89.9999F;
 	}
 	else if (pitch <= -90.0F)
 	{
-		pitch = -89.0F;
+		pitch = -89.9999F;
 	}
 
 	Camera::onUpdate(ptnt, deltaTime);

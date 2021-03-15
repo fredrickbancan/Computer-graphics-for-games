@@ -1,20 +1,22 @@
 #include "Application3D.h"
 #include "Gizmos.h"
-#include "Input.h"
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <glfw/glfw3.h>
 #include <iostream>
 #include "MouseHelper.h"
+#include "FlyCamera.h"
+#include "GuiHud.h"
+#include "Input.h"
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
 using aie::Gizmos;
+using aie::Input;
 
 Application3D::Application3D() 
 {
-	cam = new FlyCamera(glm::vec3(0,5,-10));
-	MouseHelper::init();
+	
 }
 
 Application3D::~Application3D() 
@@ -23,48 +25,95 @@ Application3D::~Application3D()
 	delete cam;
 }
 
-bool Application3D::startup() {
-	
-	setBackgroundColour(0.25f, 0.25f, 0.25f);
+bool Application3D::startup() 
+{
+	MouseHelper::init();
+
 	// initialise gizmo primitive counts
 	Gizmos::create(10000, 10000, 10000, 10000);
+
+	cam = new FlyCamera(glm::vec3(0, 5, -10));
+
+	setBackgroundColour(0.25f, 0.55f, 0.75f);
+
 	setShowCursor(false);
-	glfwSetInputMode(getWindowPtr(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPos(getWindowPtr(), getWindowWidth() / 2, getWindowHeight() / 2);
+	setVSync(false);
+	guiHud = new GuiHud(this);
+	input = Input::getInstance();
 	return true;
 }
 
 void Application3D::shutdown() 
 {
-
+	delete guiHud;
 	Gizmos::destroy();
 }
 
 void Application3D::update(float deltaTime) 
 {
-	aie::Input* input = aie::Input::getInstance();
-
 	// update physics at a fixed time step
 	static float accumulatedTime = 0.0f;
 	accumulatedTime += deltaTime;
 	while (accumulatedTime >= timeStep)
 	{
 		accumulatedTime -= timeStep;
-		doFixedUpdate(timeStep);
+		doWorldFixedUpdate(timeStep);
+
+		if (!hasDoneRenderUpdate)//do a render update once in this loop. Multiple render updates within the loop is inifficent and unecessary. Render updates do not need to be done every frame for most game objects.
+		{
+			doWorldRenderUpdate(timeStep);
+			hasDoneRenderUpdate = true;
+		}
 	}
 
 	//this is useful for interpolating the rendering of physics objects in between physics steps
 	percentageToNextTick = accumulatedTime / timeStep;
 
+	hasDoneRenderUpdate = false;
+	//TODO: 
+	if(!paused)
 	MouseHelper::get()->update(getWindowWidth() / 2, getWindowHeight() / 2, input->getMouseX(), input->getMouseY());
 
 	//reset cursor back to center of window
-	glfwSetCursorPos(getWindowPtr(), getWindowWidth()/2, getWindowHeight()/2);
+	if(!paused)
+	glfwSetCursorPos(getWindowPtr(), getWindowWidth()/2, getWindowHeight() / 2);
 
+	if(!paused)
 	cam->onUpdate(percentageToNextTick, deltaTime);
 
-	// query time since application started
-	float time = getTime();
+	guiHud->onUpdate(deltaTime);
 
+	// pause if we press escape
+	if (input->wasKeyPressed(aie::INPUT_KEY_ESCAPE) || glfwGetWindowAttrib(m_window, GLFW_ICONIFIED) == 1 || glfwGetWindowAttrib(m_window, GLFW_FOCUSED) != 1)
+	{
+		if (paused)unPauseWorld(); else pauseWorld();
+	}
+}
+
+void Application3D::draw() 
+{
+	// wipe the screen to the background colour
+	clearScreen();
+
+	// draw 3D gizmos
+	Gizmos::draw(cam->getProjectionMatrix() * cam->getViewMatrix());
+
+	// draw 2D gizmos using an orthogonal projection matrix (or screen dimensions)
+	Gizmos::draw2D((float)getWindowWidth(), (float)getWindowHeight());
+
+	guiHud->draw();
+
+}
+
+void Application3D::doWorldFixedUpdate(float timeStep)
+{
+	if(!paused)
+	cam->onWorldFixedUpdate(timeStep);
+}
+
+void Application3D::doWorldRenderUpdate(float timeStep)
+{
 	// wipe the gizmos clean for this frame
 	Gizmos::clear();
 
@@ -81,40 +130,18 @@ void Application3D::update(float deltaTime)
 	// add a transform so that we can see the axis
 	Gizmos::addTransform(mat4(1));
 
-	// demonstrate a few shapes
-	Gizmos::addAABBFilled(vec3(0), vec3(1), vec4(0, 0.5f, 1, 0.25f));
-	Gizmos::addSphere(vec3(5, 0, 5), 1, 8, 8, vec4(1, 0, 0, 0.5f));
-	Gizmos::addRing(vec3(5, 0, -5), 1, 1.5f, 8, vec4(0, 1, 0, 1));
-	Gizmos::addDisk(vec3(-5, 0, 5), 1, 16, vec4(1, 1, 0, 1));
-	Gizmos::addArc(vec3(-5, 0, -5), 0, 2, 1, 8, vec4(1, 0, 1, 1));
-
-	mat4 t = glm::rotate(mat4(1), time, glm::normalize(vec3(1, 1, 1)));
-	t[3] = vec4(-2, 0, 0, 1);
-	Gizmos::addCylinderFilled(vec3(0), 0.5f, 1, 5, vec4(0, 1, 1, 1), &t);
-
-	// demonstrate 2D gizmos
-	Gizmos::add2DAABB(glm::vec2(getWindowWidth() / 2, 100),glm::vec2(getWindowWidth() / 2 * (fmod(getTime(), 3.f) / 3), 20),vec4(0, 1, 1, 1));
-
-	// quit if we press escape
-
-	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
-		quit();
+	guiHud->onWorldRenderUpdate(timeStep);
 }
 
-void Application3D::draw() 
+void Application3D::pauseWorld()
 {
-
-	// wipe the screen to the background colour
-	clearScreen();
-
-	// draw 3D gizmos
-	Gizmos::draw(cam->getProjectionMatrix() * cam->getViewMatrix());
-
-	// draw 2D gizmos using an orthogonal projection matrix (or screen dimensions)
-	Gizmos::draw2D((float)getWindowWidth(), (float)getWindowHeight());
+	paused = true;
+	setShowCursor(true);
 }
 
-void Application3D::doFixedUpdate(float timeStep)
+void Application3D::unPauseWorld()
 {
-	cam->onFixedUpdate(timeStep);
+	paused = false;
+	setShowCursor(false);
+	glfwSetCursorPos(getWindowPtr(), getWindowWidth() / 2, getWindowHeight() / 2);
 }

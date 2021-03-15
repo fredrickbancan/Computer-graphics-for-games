@@ -24,7 +24,7 @@ Camera::~Camera()
 
 }
 
-void Camera::onFixedUpdate(float timeStep)
+void Camera::onWorldFixedUpdate(float timeStep)
 {
 	prevTickPosition = position;
 }

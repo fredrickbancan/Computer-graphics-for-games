@@ -9,7 +9,7 @@ public:
 	Camera(glm::vec3 pos, float pitch, float yaw);
 	Camera(glm::vec3 pos);
 	~Camera();
-	virtual void onFixedUpdate(float timeStep);
+	virtual void onWorldFixedUpdate(float timeStep);
 	virtual void onUpdate(float ptnt, float deltaTime);
 	glm::vec3 getPosition() { return position; }
 	glm::vec3 getLerpPosition(float ptnt) { return prevTickPosition + (position - prevTickPosition) * ptnt; }

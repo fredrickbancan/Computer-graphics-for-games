@@ -9,7 +9,8 @@ struct GLFWwindow;
 namespace aie {
 
 // a giant list of input codes for keyboard and mouse
-enum EInputCodes : int {
+enum EInputCodes : int 
+{
 	INPUT_KEY_UNKNOWN			= -1,
 	INPUT_KEY_SPACE				= 32,
 	INPUT_KEY_APOSTROPHE		= 39,
