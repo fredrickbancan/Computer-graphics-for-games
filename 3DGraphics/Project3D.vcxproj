@@ -177,6 +177,8 @@
     <ClCompile Include="GuiHud.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MouseHelper.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="TexturedBrush.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application3D.h" />
@@ -184,6 +186,8 @@
     <ClInclude Include="FlyCamera.h" />
     <ClInclude Include="GuiHud.h" />
     <ClInclude Include="MouseHelper.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="TexturedBrush.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

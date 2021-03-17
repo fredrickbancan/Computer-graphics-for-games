@@ -157,7 +157,7 @@ Gizmos::~Gizmos() {
 void Gizmos::create(unsigned int maxLines, unsigned int maxTris,
 					unsigned int max2DLines, unsigned int max2DTris) {
 	if (sm_singleton == nullptr)
-		sm_singleton = new Gizmos(maxLines,maxTris,max2DLines,max2DTris);
+		sm_singleton = new Gizmos(maxLines, maxTris, max2DLines, max2DTris);
 }
 
 void Gizmos::destroy() {

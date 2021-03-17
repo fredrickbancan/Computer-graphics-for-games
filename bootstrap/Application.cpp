@@ -9,7 +9,7 @@
 namespace aie {
 
 Application::Application()
-	: m_window(nullptr),
+	: window(nullptr),
 	m_gameOver(false),
 	m_fps(0) {
 }
@@ -22,21 +22,21 @@ bool Application::createWindow(const char* title, int width, int height, bool fu
 	if (glfwInit() == GL_FALSE)
 		return false;
 
-	m_window = glfwCreateWindow(width, height, title, (fullscreen ? glfwGetPrimaryMonitor() : nullptr), nullptr);
-	if (m_window == nullptr) {
+	window = glfwCreateWindow(width, height, title, (fullscreen ? glfwGetPrimaryMonitor() : nullptr), nullptr);
+	if (window == nullptr) {
 		glfwTerminate();
 		return false;
 	}
 
-	glfwMakeContextCurrent(m_window);
+	glfwMakeContextCurrent(window);
 
 	if (ogl_LoadFunctions() == ogl_LOAD_FAILED) {
-		glfwDestroyWindow(m_window);
+		glfwDestroyWindow(window);
 		glfwTerminate();
 		return false;
 	}
 
-	glfwSetWindowSizeCallback(m_window, [](GLFWwindow*, int w, int h){ glViewport(0, 0, w, h); });
+	glfwSetWindowSizeCallback(window, [](GLFWwindow*, int w, int h){ glViewport(0, 0, w, h); });
 
 	glClearColor(0, 0, 0, 1);
 
@@ -50,7 +50,7 @@ bool Application::createWindow(const char* title, int width, int height, bool fu
 	Input::create();
 
 	// imgui
-	ImGui_Init(m_window, true);
+	ImGui_Init(window, true);
 	
 	return true;
 }
@@ -60,7 +60,7 @@ void Application::destroyWindow() {
 	ImGui_Shutdown();
 	Input::destroy();
 
-	glfwDestroyWindow(m_window);
+	glfwDestroyWindow(window);
 	glfwTerminate();
 }
 
@@ -95,7 +95,7 @@ void Application::run(const char* title, int width, int height, bool fullscreen)
 			glfwPollEvents();
 
 			// skip if minimised
-			if (glfwGetWindowAttrib(m_window, GLFW_ICONIFIED) != 0)
+			if (glfwGetWindowAttrib(window, GLFW_ICONIFIED) != 0)
 				continue;
 
 			// update fps every second
@@ -118,10 +118,10 @@ void Application::run(const char* title, int width, int height, bool fullscreen)
 			ImGui::Render();
 
 			//present backbuffer to the monitor
-			glfwSwapBuffers(m_window);
+			glfwSwapBuffers(window);
 
 			// should the game exit?
-			m_gameOver = m_gameOver || glfwWindowShouldClose(m_window) == GLFW_TRUE;
+			m_gameOver = m_gameOver || glfwWindowShouldClose(window) == GLFW_TRUE;
 		}
 	}
 
@@ -131,7 +131,7 @@ void Application::run(const char* title, int width, int height, bool fullscreen)
 }
 
 bool Application::hasWindowClosed() {
-	return glfwWindowShouldClose(m_window) == GL_TRUE;
+	return glfwWindowShouldClose(window) == GL_TRUE;
 }
 
 void Application::clearScreen() {
@@ -152,13 +152,13 @@ void Application::setShowCursor(bool visible) {
 
 unsigned int Application::getWindowWidth() const {
 	int w = 0, h = 0;
-	glfwGetWindowSize(m_window, &w, &h);
+	glfwGetWindowSize(window, &w, &h);
 	return w;
 }
 
 unsigned int Application::getWindowHeight() const {
 	int w = 0, h = 0;
-	glfwGetWindowSize(m_window, &w, &h);
+	glfwGetWindowSize(window, &w, &h);
 	return h;
 }
 

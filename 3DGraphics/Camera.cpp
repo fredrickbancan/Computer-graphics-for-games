@@ -73,5 +73,5 @@ void Camera::setFarPlane(float fp)
 
 void Camera::makeProjectionMatrix()
 {
-	projectionMatrix = glm::perspective(glm::radians(fov), 1920.0F/1080.0F, nearPlane, farPlane);
+	projectionMatrix = glm::perspective(glm::radians(fov), aspectRatio, nearPlane, farPlane);
 }

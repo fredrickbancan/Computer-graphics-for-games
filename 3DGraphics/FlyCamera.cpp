@@ -24,7 +24,7 @@ void FlyCamera::onUpdate(float ptnt, float deltaTime)
 	if (moveVec.z == 0.0F) moveVec.y = (int)(input->isKeyDown(aie::INPUT_KEY_SPACE)) - (int)(input->isKeyDown(aie::INPUT_KEY_LEFT_CONTROL));
 	if (moveVec != glm::vec3(0,0,0)) glm::normalize(moveVec);
 
-	pitch += MouseHelper::get()->getYDelta() * mouseSensitivity;
+	pitch -= MouseHelper::get()->getYDelta() * mouseSensitivity;
 	yaw += MouseHelper::get()->getXDelta() * mouseSensitivity;
 
 	if (pitch >= 90.0F)

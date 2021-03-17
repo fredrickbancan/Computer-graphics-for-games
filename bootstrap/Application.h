@@ -40,7 +40,7 @@ public:
 	void quit() { m_gameOver = true; }
 
 	// access to the GLFW window
-	GLFWwindow* getWindowPtr() const { return m_window; }
+	GLFWwindow* getWindowPtr() const { return window; }
 
 	// query if the window has been closed somehow
 	bool hasWindowClosed();
@@ -60,7 +60,7 @@ protected:
 	virtual bool createWindow(const char* title, int width, int height, bool fullscreen);
 	virtual void destroyWindow();
 
-	GLFWwindow*		m_window;
+	GLFWwindow*		window;
 
 	// if set to false, the main game loop will exit
 	bool			m_gameOver;

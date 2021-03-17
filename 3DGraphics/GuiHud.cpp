@@ -26,10 +26,13 @@ void GuiHud::onWorldRenderUpdate(float timeStep)
 void GuiHud::draw()
 {
 	renderer->begin();
+
+
 	renderer->setRenderColour(0,1,0,1);
 	unsigned int fps = refApp->getFPS();
 	renderer->drawText(font, ( std::string("FPS: ") + std::to_string(fps) ).c_str(), 0, refApp->getWindowHeight() - 25);
 	renderer->setRenderColour(1,1,1,1);
+
 	renderer->end();
 }
 

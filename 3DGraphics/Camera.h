@@ -23,6 +23,7 @@ public:
 	void setNearPlane(float np);
 	void setFarPlane(float fp);
 	void makeProjectionMatrix();
+	void setAspectRatio(float ar) { aspectRatio = ar; makeProjectionMatrix(); }
 protected:
 	float farPlane = 1000.0F;
 	float nearPlane = 0.1F;
@@ -36,4 +37,5 @@ protected:
 	const glm::vec3 upVec = {0,1,0};
 	glm::mat4 viewMatrix;
 	glm::mat4 projectionMatrix;
+	float aspectRatio = 1920 / 1080;
 };

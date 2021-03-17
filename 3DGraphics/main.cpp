@@ -1,15 +1,8 @@
 #include "Application3D.h"
 
-int main() {
-	
-	// allocation
-	auto app = new Application3D();
-
-	// initialise and loop
-	app->run("AIE", 1280, 720, false);
-
-	// deallocation
-	delete app;
-
+int main() 
+{
+	Application3D::start();
+	Application3D::deleteInstance();
 	return 0;
 }
