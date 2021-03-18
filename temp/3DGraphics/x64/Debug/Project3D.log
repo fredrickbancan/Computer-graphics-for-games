@@ -1,9 +1,6 @@
 ﻿  Application3D.cpp
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(61,78): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(61,75): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(61,70): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(61,47): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-  Renderer.cpp
-  TexturedBrush.cpp
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Renderer.h(4,1): error C3431: 'RenderType': an unscoped enumeration cannot be redeclared as a scoped enumeration
-  Generating Code...
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(84,78): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(84,75): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(84,70): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(84,47): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  Project3D.vcxproj -> C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\temp\3DGraphics\x64\Debug\3DGraphics.exe

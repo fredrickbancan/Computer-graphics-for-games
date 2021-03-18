@@ -13,18 +13,30 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\World">
+      <UniqueIdentifier>{3c7164a9-1e00-4fee-a952-9c05dc04e5f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World">
+      <UniqueIdentifier>{778b988e-d149-42ae-9c83-b90b001cabcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Rendering">
+      <UniqueIdentifier>{48c22426-cb0d-44e2-9dd9-c9313fb4e387}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rendering">
+      <UniqueIdentifier>{0e3d3dad-678a-46ef-9ee0-20d096478ecf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{e4442c17-4c36-4925-8f71-c824b980e737}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures">
+      <UniqueIdentifier>{41617102-7d7f-488c-8553-0275ca4cd70a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Application3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FlyCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MouseHelper.cpp">
@@ -34,20 +46,23 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TexturedBrush.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="FlyCamera.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\World</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders.cpp">
+      <Filter>Source Files\Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application3D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FlyCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MouseHelper.h">
@@ -56,11 +71,111 @@
     <ClInclude Include="GuiHud.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="FlyCamera.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
     <ClInclude Include="TexturedBrush.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\World</Filter>
     </ClInclude>
     <ClInclude Include="Renderer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="Shaders.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\bin\textures\ball.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\barrelBeige.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\barrelBlue.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\barrelGreen.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\barrelRed.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\bricks.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\bullet.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\car.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\colorbands.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\glass.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\grass.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\grass_side.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\grid.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\ice.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\image.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\numbered_grid.tga">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\rock_large.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\rock_medium.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\rock_small.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\ship.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\tankBeige.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\tankBlue.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\tankGreen.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\tankRed.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\trchimken.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\trstone.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\bin\shaders\TEXTURED_ALBEDO.shader">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\shaders\TEXTURED_LIT_FOG.shader">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\shaders\TEXTURED_LIT_TRANSPARENT_FOG.shader">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -104,7 +104,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SOLUTION_DIR="$(SolutionDir)"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)bootstrap;$(SolutionDir)dependencies/imgui;$(SolutionDir)dependencies/glm;$(SolutionDir)dependencies/glfw/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -120,7 +120,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SOLUTION_DIR="$(SolutionDir)"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)bootstrap;$(SolutionDir)dependencies/imgui;$(SolutionDir)dependencies/glm;$(SolutionDir)dependencies/glfw/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -138,7 +138,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SOLUTION_DIR="$(SolutionDir)"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)bootstrap;$(SolutionDir)dependencies/imgui;$(SolutionDir)dependencies/glm;$(SolutionDir)dependencies/glfw/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -158,7 +158,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SOLUTION_DIR="$(SolutionDir)"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)bootstrap;$(SolutionDir)dependencies/imgui;$(SolutionDir)dependencies/glm;$(SolutionDir)dependencies/glfw/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -178,6 +178,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MouseHelper.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="TexturedBrush.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -187,7 +188,41 @@
     <ClInclude Include="GuiHud.h" />
     <ClInclude Include="MouseHelper.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Shaders.h" />
     <ClInclude Include="TexturedBrush.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\bin\textures\ball.png" />
+    <Image Include="..\bin\textures\barrelBeige.png" />
+    <Image Include="..\bin\textures\barrelBlue.png" />
+    <Image Include="..\bin\textures\barrelGreen.png" />
+    <Image Include="..\bin\textures\barrelRed.png" />
+    <Image Include="..\bin\textures\bricks.png" />
+    <Image Include="..\bin\textures\bullet.png" />
+    <Image Include="..\bin\textures\car.png" />
+    <Image Include="..\bin\textures\colorbands.png" />
+    <Image Include="..\bin\textures\glass.png" />
+    <Image Include="..\bin\textures\grass.png" />
+    <Image Include="..\bin\textures\grass_side.png" />
+    <Image Include="..\bin\textures\grid.png" />
+    <Image Include="..\bin\textures\ice.png" />
+    <Image Include="..\bin\textures\image.png" />
+    <Image Include="..\bin\textures\numbered_grid.tga" />
+    <Image Include="..\bin\textures\rock_large.png" />
+    <Image Include="..\bin\textures\rock_medium.png" />
+    <Image Include="..\bin\textures\rock_small.png" />
+    <Image Include="..\bin\textures\ship.png" />
+    <Image Include="..\bin\textures\tankBeige.png" />
+    <Image Include="..\bin\textures\tankBlue.png" />
+    <Image Include="..\bin\textures\tankGreen.png" />
+    <Image Include="..\bin\textures\tankRed.png" />
+    <Image Include="..\bin\textures\trchimken.png" />
+    <Image Include="..\bin\textures\trstone.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\bin\shaders\TEXTURED_ALBEDO.shader" />
+    <None Include="..\bin\shaders\TEXTURED_LIT_FOG.shader" />
+    <None Include="..\bin\shaders\TEXTURED_LIT_TRANSPARENT_FOG.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

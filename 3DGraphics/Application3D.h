@@ -3,7 +3,7 @@
 #include "Application.h"
 #include <glm/mat4x4.hpp>
 #include "Input.h"
-
+#include <vector>
 class Application3D : public aie::Application 
 {
 public:
@@ -23,6 +23,9 @@ public:
 	void unPauseWorld();
 	void onWindowResize(int width, int height);
 
+	glm::mat4 getViewMatrix();
+	glm::mat4 getProjectionMatrix();
+
 protected:
 	aie::Input* input = nullptr;
 	class GuiHud* guiHud = nullptr;
@@ -32,6 +35,7 @@ protected:
 	float percentageToNextTick = 1.0F;
 	float timeStep = 0.0333333F;
 	bool initialized = false;
+	std::vector<class TexturedBrush*> texturedBrushes;
 private:
 	static Application3D* singletonInstance;
 };

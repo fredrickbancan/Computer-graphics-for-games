@@ -9,6 +9,8 @@
 #include "GuiHud.h"
 #include "Input.h"
 #include "Renderer.h"
+#include "TexturedBrush.h"
+
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
@@ -29,15 +31,28 @@ bool Application3D::startup()
 	MouseHelper::init();
 	Renderer::init();
 	Gizmos::create(10000, 10000, 10000, 10000);// initialise gizmo primitive counts
-	setBackgroundColour(0.25f, 0.55f, 0.75f);
+	setBackgroundColour(0.0f, 0.0f, 0.0f);
 	glfwSetCursorPos(window, getWindowWidth() / 2, getWindowHeight() / 2);
 	glfwSetWindowSizeCallback(window, onWindowResize_Callback);
 	setVSync(false);
+	glfwSwapInterval(0);
 	setShowCursor(false);
-	cam = new FlyCamera(glm::vec3(0, 5, -10));
+	cam = new FlyCamera(glm::vec3(0, 2, 10));
+	cam->setAspectRatio((float)getWindowWidth() / (float)getWindowHeight());
+	glViewport(0, 0, getWindowWidth(), getWindowHeight());
 	guiHud = new GuiHud(this);
 	input = Input::getInstance();
 	initialized = true;
+	texturedBrushes.push_back(new TexturedBrush(0, -0.5F, 0, 35.0F, 0.5F, 35.0F, "grid.png"));
+	texturedBrushes.push_back(new TexturedBrush(15, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(5, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(-5, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(-15, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(0, 2.0F, 0.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
+	texturedBrushes.push_back(new TexturedBrush(8, 2.0F, 4.0F, 2.0F, 2.0F, 2.0F, "ice.png"));
+	texturedBrushes.push_back(new TexturedBrush(-8, 2.0F, 4.0F, 2.0F, 2.0F, 2.0F, "ice.png"));
+	texturedBrushes.push_back(new TexturedBrush(-8, 2.0F, 12.0F, 2.0F, 2.0F, 2.0F, "ice.png"));
+	texturedBrushes.push_back(new TexturedBrush(0, 12.0F, 22.0F, 20.0F, 12.0F, 0.1F, "ice.png"));
 	return true;
 }
 
@@ -49,6 +64,14 @@ void Application3D::shutdown()
 	Renderer::close();
 	delete cam;
 	delete guiHud;
+
+	for (std::vector<TexturedBrush*>::iterator i = texturedBrushes.begin(); i != texturedBrushes.end(); ++i)
+	{
+		TexturedBrush* p = *i;
+		delete p;
+	}
+
+	texturedBrushes.clear();
 }
 
 void Application3D::update(float deltaTime) 
@@ -73,6 +96,10 @@ void Application3D::update(float deltaTime)
 void Application3D::draw() 
 {
 	clearScreen();// wipe the screen to the background colour
+	for (std::vector<TexturedBrush*>::iterator i = texturedBrushes.begin(); i != texturedBrushes.end(); i++)//Doing this intead of using render updates since they are not dynamic objects and this is a lot simpler than setting up batching, render object inheritence etc.
+	{
+		Renderer::getInstance()->drawTexturedBrush(*i);
+	}
 	Gizmos::draw(cam->getProjectionMatrix() * cam->getViewMatrix());// draw 3D gizmos
 	Gizmos::draw2D((float)getWindowWidth(), (float)getWindowHeight());// draw 2D gizmos using an orthogonal projection matrix (or screen dimensions)
 	guiHud->draw();
@@ -115,6 +142,7 @@ void Application3D::doWorldRenderUpdate(float timeStep)
 	}
 	Gizmos::addTransform(mat4(1));// add a transform so that we can see the axis
 	guiHud->onWorldRenderUpdate(timeStep);
+
 }
 
 void Application3D::pauseWorld()
@@ -135,6 +163,16 @@ void Application3D::onWindowResize(int width, int height)
 	if (!initialized) return;
 	cam->setAspectRatio((float)width/(float)height);
 	glViewport(0, 0, width, height);
+}
+
+glm::mat4 Application3D::getViewMatrix()
+{
+	return cam->getViewMatrix();
+}
+
+glm::mat4 Application3D::getProjectionMatrix()
+{
+	return cam->getProjectionMatrix();
 }
 
 
