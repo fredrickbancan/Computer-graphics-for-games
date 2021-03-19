@@ -11,6 +11,7 @@
 #include "Shaders.h"
 #include "Application3D.h"
 #include "Input.h"
+#include "PointLight.h"
 using namespace aie;
 
 Renderer* Renderer::singletonInstance = nullptr;
@@ -61,10 +62,10 @@ static Vertex cubeVertices[] =
 	Vertex({0.5F, -0.5F, -0.5F}, {1,1}, {0,0,-1}, {1,1,1,1}),
 
 	//right face
-	Vertex({0.5F, 0.5F, 0.5F}, {1,0}, {0,0,1}, {1,1,1,1}),
-	Vertex({0.5F, 0.5F, -0.5F}, {0,0}, {0,0,1}, {1,1,1,1}),
-	Vertex({0.5F, -0.5F, -0.5F}, {0,1}, {0,0,1}, {1,1,1,1}),
-	Vertex({0.5F, -0.5F, 0.5F}, {1,1}, {0,0,1}, {1,1,1,1}),
+	Vertex({0.5F, 0.5F, 0.5F}, {1,0}, {1,0,0}, {1,1,1,1}),
+	Vertex({0.5F, 0.5F, -0.5F}, {0,0}, {1,0,0}, {1,1,1,1}),
+	Vertex({0.5F, -0.5F, -0.5F}, {0,1}, {1,0,0}, {1,1,1,1}),
+	Vertex({0.5F, -0.5F, 0.5F}, {1,1}, {1,0,0}, {1,1,1,1}),
 
 	//top face
 	Vertex({0.5F, 0.5F, 0.5F}, {1,0}, {0,1,0}, {1,1,1,1}),
@@ -85,22 +86,24 @@ static Vertex cubeVertices[] =
 	Vertex({0.5F, -0.5F, 0.5F}, {1,1}, {0,-1,0}, {1,1,1,1}),
 
 	//front face
-	Vertex({-0.5F, 0.5F, 0.5F}, {1,0}, {1,0,0}, {1,1,1,1}),
-	Vertex({0.5F, 0.5F, 0.5F}, {0,0}, {1,0,0}, {1,1,1,1}),
-	Vertex({0.5F, -0.5F, 0.5F}, {0,1}, {1,0,0}, {1,1,1,1}),
-	Vertex({-0.5F, -0.5F, 0.5F}, {1,1}, {1,0,0}, {1,1,1,1})
+	Vertex({-0.5F, 0.5F, 0.5F}, {1,0}, {0,0,1}, {1,1,1,1}),
+	Vertex({0.5F, 0.5F, 0.5F}, {0,0}, {0,0,1}, {1,1,1,1}),
+	Vertex({0.5F, -0.5F, 0.5F}, {0,1}, {0,0,1}, {1,1,1,1}),
+	Vertex({-0.5F, -0.5F, 0.5F}, {1,1}, {0,0,1}, {1,1,1,1})
 };
 
 Renderer::Renderer()
 {
+	int maxVertUniformComps = 0; glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &maxVertUniformComps);
 	std::cout << "OpenGL Vendor: " << glGetString(GL_VENDOR) << std::endl;
 	std::cout << "OpenGL Renderer: " << glGetString(GL_RENDERER) << std::endl;
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 	std::cout << "OpenGL Shading Language Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+	std::cout << "OpenGL Max Vertex Shader Uniform Components: " << maxVertUniformComps << std::endl;
 
 	shader_NONE = nullptr;
 	shader_TEXTURED_ALBEDO = new Shader("shaders/TEXTURED_ALBEDO.shader");
-	shader_TEXTURED_LIT_FOG = new Shader("shaders/TEXTURED_LIT_FOG.shader", "shaders/PROXIMITY_TESSELATION.shader");
+	shader_TEXTURED_LIT_FOG = new Shader("shaders/TEXTURED_LIT_FOG.shader", "shaders/PROXIMITY_TESSELLATION.shader");
 	shader_TEXTURED_LIT_TRANSPARENT_FOG = new Shader("shaders/TEXTURED_LIT_TRANSPARENT_FOG.shader");
 
 
@@ -153,6 +156,18 @@ Renderer::~Renderer()
 
 void Renderer::drawTexturedBrush(TexturedBrush* tb)                  
 {
+	constexpr int maxLights = 4;
+	glm::mat4 pointLightMats[maxLights]{glm::mat4(0)};
+
+	std::vector<PointLight*> pLights = Application3D::getInstance()->getPointLights();
+
+	int iter = 0;
+	for (std::vector<PointLight*>::iterator i = pLights.begin(); i != pLights.end(); ++i)
+	{
+		pointLightMats[iter] = (*i)->getMatrix();
+		if (++iter >= maxLights) break;
+	}
+
 	glFrontFace(GL_CW);
 	if(debugWireFrameMode)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
@@ -178,12 +193,15 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 
 	case RenderType::TEXTURED_LIT_FOG:
 		shader_TEXTURED_LIT_FOG->bind();
+		shader_TEXTURED_LIT_FOG->setUniformMat4fArray("pointLights", iter, &pointLightMats[0][0][0]);
+		shader_TEXTURED_LIT_FOG->setUniform1i("activeLights", iter);
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("modelMatrix", modelMatrix);
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("viewMatrix", Application3D::getInstance()->getViewMatrix());
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
 		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
-		shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 30);
-		shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 60);
+		shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 100);
+		shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 200);
+		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 50);
 		glDrawArrays(GL_PATCHES, 0, 24);
 		break;
 
@@ -194,6 +212,7 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 	default:
 		break;
 	}
+	if (debugWireFrameMode)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glFrontFace(GL_CCW);
 }

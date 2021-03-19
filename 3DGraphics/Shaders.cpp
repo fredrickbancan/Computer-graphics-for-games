@@ -232,6 +232,12 @@ void Shader::setUniformMat4f(const std::string& name, const glm::mat4 matrix)
 	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
 }
 
+void Shader::setUniformMat4fArray(const std::string& name, int count, const float* begin)
+{
+	//parameters: location, count, needs to be transposed, reference to float array ( since we are using a matrix we reference the column 0 row 0)
+	glUniformMatrix4fv(getUniformLocation(name), count, GL_FALSE, begin);
+}
+
 
 
 int Shader::getUniformLocation(const std::string& name) 

@@ -1,6 +1,8 @@
 ﻿  Application3D.cpp
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(87,78): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(87,75): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(87,70): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(87,47): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(64,71): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(95,78): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(95,75): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(95,70): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(95,47): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   Project3D.vcxproj -> C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\temp\3DGraphics\x64\Debug\3DGraphics.exe

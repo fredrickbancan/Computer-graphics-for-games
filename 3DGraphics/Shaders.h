@@ -58,6 +58,7 @@ public:
     void setUniform1i(const std::string& name, int value);
     void setUniform1f(const std::string& name, float value);
     void setUniformMat4f(const std::string& name, const glm::mat4 matrix );
+    void setUniformMat4fArray(const std::string& name, int count, const float* begin);
     int getUniformLocation(const std::string& name);
     unsigned int getShaderProgramId();
 };

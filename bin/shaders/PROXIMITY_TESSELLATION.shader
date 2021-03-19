@@ -10,12 +10,12 @@ in vec4 vColor[];
 in vec2 vTexCoord[];
 in vec3 vNormal[];
 in vec3 vWorldPos[];
-in float visibility[];
+
 uniform vec3 camWorldPos;
 
-uniform float fogStart = 10;
-uniform float fogEnd = 40;
-
+uniform float fogStart;
+uniform float fogEnd;
+uniform float detailDist;
 out Tess
 {
     vec4 color;
@@ -38,11 +38,12 @@ void main(void)
         vec3 camPosClampedToFace = vec3(clamp(camWorldPos.x, smallestX, biggestX), clamp(camWorldPos.y, smallestY, biggestY), clamp(camWorldPos.z, smallestZ, biggestZ));
         float faceSize = distance(vWorldPos[1], vWorldPos[3]);//length of diagonal line of face
         float distToFace = distance(camWorldPos, camPosClampedToFace);
-        float tessFactor = 1.0F - ceil(distToFace * 0.1) * 10 / fogEnd;
+        float tessFactor = 1.0F - distToFace / detailDist;
 
-        tessFactor = pow(tessFactor, 2);
-
+        tessFactor *= tessFactor;
         float level = (faceSize / 1.41421356237) * tessFactor * 1.25;
+        if (distToFace > detailDist) level = 1;
+        if (distToFace > fogEnd) level = 0;
         gl_TessLevelInner[0] = level;
         gl_TessLevelInner[1] = level;
         gl_TessLevelOuter[0] = level;
@@ -71,8 +72,8 @@ out vec4 vColor;
 out vec2 vTexCoord;
 out float visibility;
 
-uniform float fogStart = 10;
-uniform float fogEnd = 40;
+uniform float fogStart;
+uniform float fogEnd;
 
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;

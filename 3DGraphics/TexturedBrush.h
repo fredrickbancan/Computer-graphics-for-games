@@ -18,6 +18,7 @@ public:
 	int getRenderType() { return renderType; }
 	float getOpacity() { return opacity; }
 	void bindTexture(int slot);
+
 private:
 	glm::vec3 dimentions = glm::vec3{0.5F,0.5F,0.5F};
 	glm::vec3 pos = glm::vec3{0,0,0};

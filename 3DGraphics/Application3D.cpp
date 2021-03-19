@@ -10,7 +10,7 @@
 #include "Input.h"
 #include "Renderer.h"
 #include "TexturedBrush.h"
-
+#include "PointLight.h"
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
@@ -47,15 +47,23 @@ bool Application3D::startup()
 	texturedBrushes.push_back(new TexturedBrush(-20, -0.5F, 20, 20.0F, 0.5F, 20.0F, "grid.png"));
 	texturedBrushes.push_back(new TexturedBrush(20, -0.5F, -20, 20.0F, 0.5F, 20.0F, "grid.png"));
 	texturedBrushes.push_back(new TexturedBrush(20, -0.5F, 20,20.0F, 0.5F, 20.0F, "grid.png"));
+
 	texturedBrushes.push_back(new TexturedBrush(15, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
 	texturedBrushes.push_back(new TexturedBrush(5, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
 	texturedBrushes.push_back(new TexturedBrush(-5, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
 	texturedBrushes.push_back(new TexturedBrush(-15, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
+
+	texturedBrushes.push_back(new TexturedBrush(15, 5.0F, 20.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(5, 5.0F, 20.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(-5, 5.0F, 20.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(-15, 5.0F, 20.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
+
 	texturedBrushes.push_back(new TexturedBrush(0, 2.0F, 0.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
 	texturedBrushes.push_back(new TexturedBrush(8, 2.0F, 4.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
 	texturedBrushes.push_back(new TexturedBrush(-8, 2.0F, 4.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
-	texturedBrushes.push_back(new TexturedBrush(-8, 2.0F, 12.0F, 2.0F, 2.0F, 2.0F, "ice.png"));
-	texturedBrushes.push_back(new TexturedBrush(0, 12.0F, 22.0F, 20.0F, 12.0F, 0.1F, "ice.png"));
+	pointLights.push_back(new PointLight({ 0,10,0 }, {1,1,1}, 5, 25, 0.6));
+	pointLights.push_back(new PointLight({ 15,2, -25}, {0.6F,0.4F,0.3F}, 4, 16, 0.5F));
+	pointLights.push_back(new PointLight({ -25,50, 25 }, {0.1F,0.2F,0.9F}, 0.1F, 32, 0.4F));
 	return true;
 }
 

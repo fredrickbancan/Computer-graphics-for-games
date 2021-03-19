@@ -27,6 +27,7 @@ public:
 	glm::mat4 getProjectionMatrix();
 	glm::vec3 getCamPos();
 
+	std::vector<struct PointLight*> getPointLights() { return pointLights; }
 protected:
 	aie::Input* input = nullptr;
 	class GuiHud* guiHud = nullptr;
@@ -37,6 +38,7 @@ protected:
 	float timeStep = 0.0333333F;
 	bool initialized = false;
 	std::vector<class TexturedBrush*> texturedBrushes;
+	std::vector<struct PointLight*> pointLights;
 private:
 	static Application3D* singletonInstance;
 };

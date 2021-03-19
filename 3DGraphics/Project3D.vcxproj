@@ -187,6 +187,7 @@
     <ClInclude Include="FlyCamera.h" />
     <ClInclude Include="GuiHud.h" />
     <ClInclude Include="MouseHelper.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="TexturedBrush.h" />
@@ -220,7 +221,7 @@
     <Image Include="..\bin\textures\trstone.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\bin\shaders\PROXIMITY_TESSELATION.shader" />
+    <None Include="..\bin\shaders\PROXIMITY_TESSELLATION.shader" />
     <None Include="..\bin\shaders\TEXTURED_ALBEDO.shader" />
     <None Include="..\bin\shaders\TEXTURED_LIT_FOG.shader" />
     <None Include="..\bin\shaders\TEXTURED_LIT_TRANSPARENT_FOG.shader" />

@@ -6,8 +6,8 @@ layout(location = 1) in vec2 uv;
 layout(location = 2) in vec3 normal;
 layout(location = 3) in vec4 color;
 
-uniform float fogStart = 10;
-uniform float fogEnd = 40;
+uniform float fogStart;
+uniform float fogEnd;
 
 out vec2 vTexCoord;
 out vec4 vColor;
@@ -17,6 +17,8 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 
+uniform mat4 pointLights[4];
+uniform int activeLights = 0;
 float positionResolution = 8192;
 float innacuracyOverDistanceFactor = 16;
 
@@ -26,23 +28,36 @@ void main()
 {
 	vec4 positionRelativeToCam = viewMatrix * modelMatrix * vec4(position, 1);
 
-	float distanceFromCam = length(positionRelativeToCam.xyz);
+	gl_Position = projectionMatrix * positionRelativeToCam;
+
+	float distanceFromCam = length(gl_Position.xyz);
 	visibility = (distanceFromCam - fogStart) / (fogEnd - fogStart);
 	visibility = clamp(visibility, 0.0, 1.0);
 	visibility = 1.0 - visibility;
 	visibility *= visibility;
 
-	gl_Position = projectionMatrix * positionRelativeToCam;
 
-	distanceFromCam = clamp(gl_Position.w, -1, 1000);
+	distanceFromCam = clamp(gl_Position.w, -0.1, 1000);
 	//apply nostalgic vertex jitter
 	gl_Position.xy = round(gl_Position.xy * (positionResolution / (distanceFromCam * innacuracyOverDistanceFactor))) / (positionResolution / (distanceFromCam * innacuracyOverDistanceFactor));
 
 
 	vTexCoord = uv;
-	vColor = color;
 	vNormal = normal;
 	vWorldPos = (modelMatrix * vec4(position, 1)).xyz;
+
+	vColor = color * 0.072F;
+
+	
+	for (int i = 0; i < activeLights; i++)
+	{
+		vec3 vertToLight;
+		float dotToLight;
+		vertToLight = pointLights[i][0].xyz - vWorldPos;
+		dotToLight = clamp(dot(normalize(vertToLight), normal), 0, 1);
+		vColor += pointLights[i][1] * dotToLight * pointLights[i][2][2];
+	}
+	vColor.a = color.a;
 }
 
 

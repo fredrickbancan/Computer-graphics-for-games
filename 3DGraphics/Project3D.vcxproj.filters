@@ -86,6 +86,9 @@
     <ClInclude Include="Shaders.h">
       <Filter>Header Files\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\bin\textures\ball.png">
@@ -177,7 +180,7 @@
     <None Include="..\bin\shaders\TEXTURED_LIT_TRANSPARENT_FOG.shader">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="..\bin\shaders\PROXIMITY_TESSELATION.shader">
+    <None Include="..\bin\shaders\PROXIMITY_TESSELLATION.shader">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>
