@@ -43,14 +43,17 @@ bool Application3D::startup()
 	guiHud = new GuiHud(this);
 	input = Input::getInstance();
 	initialized = true;
-	texturedBrushes.push_back(new TexturedBrush(0, -0.5F, 0, 35.0F, 0.5F, 35.0F, "grid.png"));
+	texturedBrushes.push_back(new TexturedBrush(-20, -0.5F, -20, 20.0F, 0.5F, 20.0F, "grid.png"));
+	texturedBrushes.push_back(new TexturedBrush(-20, -0.5F, 20, 20.0F, 0.5F, 20.0F, "grid.png"));
+	texturedBrushes.push_back(new TexturedBrush(20, -0.5F, -20, 20.0F, 0.5F, 20.0F, "grid.png"));
+	texturedBrushes.push_back(new TexturedBrush(20, -0.5F, 20,20.0F, 0.5F, 20.0F, "grid.png"));
 	texturedBrushes.push_back(new TexturedBrush(15, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
 	texturedBrushes.push_back(new TexturedBrush(5, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
 	texturedBrushes.push_back(new TexturedBrush(-5, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
 	texturedBrushes.push_back(new TexturedBrush(-15, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
 	texturedBrushes.push_back(new TexturedBrush(0, 2.0F, 0.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
-	texturedBrushes.push_back(new TexturedBrush(8, 2.0F, 4.0F, 2.0F, 2.0F, 2.0F, "ice.png"));
-	texturedBrushes.push_back(new TexturedBrush(-8, 2.0F, 4.0F, 2.0F, 2.0F, 2.0F, "ice.png"));
+	texturedBrushes.push_back(new TexturedBrush(8, 2.0F, 4.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
+	texturedBrushes.push_back(new TexturedBrush(-8, 2.0F, 4.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
 	texturedBrushes.push_back(new TexturedBrush(-8, 2.0F, 12.0F, 2.0F, 2.0F, 2.0F, "ice.png"));
 	texturedBrushes.push_back(new TexturedBrush(0, 12.0F, 22.0F, 20.0F, 12.0F, 0.1F, "ice.png"));
 	return true;
@@ -86,7 +89,11 @@ void Application3D::update(float deltaTime)
 		glfwSetCursorPos(getWindowPtr(), getWindowWidth()/2, getWindowHeight() / 2);//reset cursor back to center of window
 		doWorldFixedUpdateLoop(deltaTime);
 	}
+
+	Renderer::getInstance()->doDebugInputs(input);
+
 	guiHud->onUpdate(deltaTime);
+
 	if (input->wasKeyPressed(aie::INPUT_KEY_ESCAPE) || (!paused && glfwGetWindowAttrib(window, GLFW_FOCUSED) == 0))// pause if we press escape or lose window focus
 	{
 		if (paused) unPauseWorld(); else pauseWorld();
@@ -173,6 +180,11 @@ glm::mat4 Application3D::getViewMatrix()
 glm::mat4 Application3D::getProjectionMatrix()
 {
 	return cam->getProjectionMatrix();
+}
+
+glm::vec3 Application3D::getCamPos()
+{
+	return cam->getPosition();
 }
 
 

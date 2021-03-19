@@ -8,9 +8,8 @@
 #include <glm/vec4.hpp>
 #include <glm/vec3.hpp>
 
-unsigned int Shader::compileShader(unsigned int type, const std::string& source)
+unsigned int Shader::compileShaderOfType(unsigned int type, const std::string& source)
 {
-
 	unsigned int id = glCreateShader(type);
 	const char* src = source.c_str();
 	 glShaderSource(id, 1, &src, nullptr);
@@ -19,13 +18,14 @@ unsigned int Shader::compileShader(unsigned int type, const std::string& source)
 	/*error checking*/
 	int result;
 	glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+
 	if (result == GL_FALSE)
 	{
 		int length;
 		 glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-		char* message =  (char*)alloca(length * sizeof(char));
+		char* message =  (char*)_malloca(length * sizeof(char));
 		 glGetShaderInfoLog(id, length, &length, message);
-		std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
+		std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : type == GL_FRAGMENT_SHADER ? "fragment" : type == GL_TESS_CONTROL_SHADER ? "tess controll" : "tess eval" ) << " shader!" << std::endl;
 		std::cout << message << std::endl;
 		 glDeleteShader(id);
 		return 0;
@@ -33,39 +33,62 @@ unsigned int Shader::compileShader(unsigned int type, const std::string& source)
 
 	return id;
 }
-
-unsigned int Shader::createShader(const std::string& vertexShader, const std::string& fragmentShader)
+unsigned int Shader::createShader(ShaderProgramSource source)
 {
 	unsigned int program = glCreateProgram();
-	unsigned int vsh = compileShader(GL_VERTEX_SHADER, vertexShader);
-	unsigned int fsh = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
+	unsigned int vertID;
+	unsigned int fragID;
+	unsigned int tessContID;
+	unsigned int tessEvalID;
 
-	 glAttachShader(program, vsh);
-	 glAttachShader(program, fsh);
-	 glLinkProgram(program);
-	 glValidateProgram(program);
+	if (source.hasFrag)
+	{
+		fragID = compileShaderOfType(GL_FRAGMENT_SHADER, source.fragmentSource);
+		glAttachShader(program, fragID);
+		glDeleteShader(fragID);
+	}
+	if (source.hasVert)
+	{
+		vertID = compileShaderOfType(GL_VERTEX_SHADER, source.vertexSource);
+		glAttachShader(program, vertID);
+		glDeleteShader(vertID);
+	}
+	if (source.hasTessCont)
+	{
+		tessContID = compileShaderOfType(GL_TESS_CONTROL_SHADER, source.tessContSource);
+		glAttachShader(program, tessContID);
+		glDeleteShader(tessContID);
+	}
+	if (source.hasTessEval)
+	{
+		tessEvalID = compileShaderOfType(GL_TESS_EVALUATION_SHADER, source.tessEvalSource);
+		glAttachShader(program, tessEvalID);
+		glDeleteShader(tessEvalID);
+	}
 
-	 glDeleteShader(vsh);
-	 glDeleteShader(fsh);
+	glLinkProgram(program);
+	glValidateProgram(program);
 
 	return program;
 }
 
-shaderProgramSource Shader::parseShaderFile(const std::string& path)
+ShaderProgramSource Shader::parseVertFragShaderFile(const std::string& vertFragPath)
 {
-	enum class ShaderType
+	enum class ShaderEnum
 	{
 		NONE = -1, VERTEX = 0, FRAGMENT = 1
 	};
-	ShaderType type = ShaderType::NONE;
 
-	std::ifstream stream(path);
+	ShaderEnum type = ShaderEnum::NONE;
+
+	std::ifstream stream(vertFragPath);
 	if (!stream.good())
 	{
-		std::cout << "Error: Could not read shader from dir: " << path << std::endl;
+		std::cout << "Error: Could not read fragment/vertex shader from dir: " << vertFragPath << std::endl;
 	}
 	std::string line;
 	std::stringstream ss[2];
+	ShaderProgramSource result;
 
 	while (getline(stream, line))
 	{
@@ -73,11 +96,13 @@ shaderProgramSource Shader::parseShaderFile(const std::string& path)
 		{
 			if (line.find("vertex") != std::string::npos)
 			{
-				type = ShaderType::VERTEX;
+				type = ShaderEnum::VERTEX;
+				result.hasVert = true;
 			}
 			else if (line.find("fragment") != std::string::npos)
 			{
-				type = ShaderType::FRAGMENT;
+				type = ShaderEnum::FRAGMENT;
+				result.hasFrag = true;
 			}
 		}
 		else
@@ -85,16 +110,75 @@ shaderProgramSource Shader::parseShaderFile(const std::string& path)
 			ss[(int)type] << line << '\n';
 		}
 	}
+
+	stream.close();
+
+	result.fragmentSource = ss[1].str();
+	result.vertexSource = ss[0].str();
+
 	//this uses the shaderProgramSource struct in shaders.h
-	return {ss[0].str(), ss[1].str()};
+	return result;
 }
 
-Shader::Shader(const std::string& filePath) : filePath(filePath), shaderId(0)
+ShaderProgramSource Shader::parseTessShaderFile(const std::string& tessPath, ShaderProgramSource fragVertSource)
 {
+	enum class ShaderEnum
+	{
+		NONE = -1, CONT = 0, EVAL = 1
+	};
 
-	/*parses shader and puts the id into shaderId*/
-	shaderProgramSource source = parseShaderFile(filePath);
-	shaderId = createShader(source.vertexSource, source.fragmentSource);
+	ShaderEnum type = ShaderEnum::NONE;
+
+	std::ifstream stream(tessPath);
+	if (!stream.good())
+	{
+		std::cout << "Error: Could not read tess shader from dir: " << tessPath << std::endl;
+	}
+	std::string line;
+	std::stringstream ss[2];
+	ShaderProgramSource result = fragVertSource;
+
+	while (getline(stream, line))
+	{
+		if (line.find("#shader") != std::string::npos)
+		{
+			if (line.find("tesscont") != std::string::npos)
+			{
+				type = ShaderEnum::CONT;
+				result.hasTessCont = true;
+			}
+			else if (line.find("tesseval") != std::string::npos)
+			{
+				type = ShaderEnum::EVAL;
+				result.hasTessEval = true;
+			}
+		}
+		else
+		{
+			ss[(int)type] << line << '\n';
+		}
+	}
+
+	stream.close();
+
+	result.tessContSource = ss[0].str();
+	result.tessEvalSource = ss[1].str();
+
+	//this uses the shaderProgramSource struct in shaders.h
+	return result;
+}
+
+Shader::Shader(const std::string& fragVertPath) : vertFragFilePath(fragVertPath), shaderId(0)
+{
+	ShaderProgramSource source = parseVertFragShaderFile(fragVertPath);
+	shaderId = createShader(source);
+}
+
+Shader::Shader(const std::string& vertFragFilePath, const std::string& tessFilePath) : vertFragFilePath(vertFragFilePath), tessFilePath(tessFilePath), shaderId(0)
+{
+	ShaderProgramSource source = parseVertFragShaderFile(vertFragFilePath);
+	source = parseTessShaderFile(tessFilePath, source);
+	shaderId = createShader(source);
 }
 
 Shader::~Shader()
@@ -117,9 +201,29 @@ void Shader::setUniform4f(const std::string& name, float v0, float v1, float v2,
 	glUniform4f(getUniformLocation(name), v0, v1, v2, v3);
 }
 
+void Shader::setUniform4f(const std::string& name, glm::vec4 vec)
+{
+	glUniform4f(getUniformLocation(name), vec.x, vec.y, vec.z, vec.w);
+}
+
+void Shader::setUniform3f(const std::string& name, float v0, float v1, float v2)
+{
+	glUniform3f(getUniformLocation(name), v0, v1, v2);
+}
+
+void Shader::setUniform3f(const std::string& name, glm::vec3 vec)
+{
+	glUniform3f(getUniformLocation(name), vec.x, vec.y, vec.z);
+}
+
 void Shader::setUniform1i(const std::string& name, int value)
 {
 	glUniform1i(getUniformLocation(name), value);
+}
+
+void Shader::setUniform1f(const std::string& name, float value)
+{
+	glUniform1f(getUniformLocation(name), value);
 }
 
 void Shader::setUniformMat4f(const std::string& name, const glm::mat4 matrix)
@@ -127,6 +231,8 @@ void Shader::setUniformMat4f(const std::string& name, const glm::mat4 matrix)
 	//parameters: location, count, needs to be transposed, reference to float array ( since we are using a matrix we reference the column 0 row 0)
 	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
 }
+
+
 
 int Shader::getUniformLocation(const std::string& name) 
 {

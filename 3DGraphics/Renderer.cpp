@@ -10,6 +10,7 @@
 #include <iostream>
 #include "Shaders.h"
 #include "Application3D.h"
+#include "Input.h"
 using namespace aie;
 
 Renderer* Renderer::singletonInstance = nullptr;
@@ -37,6 +38,8 @@ Renderer* Renderer::singletonInstance = nullptr;
    //            17-------16
    //
 
+
+//for triangles
 static unsigned int cubeIndices[] =
 { 
 	0, 1, 2, 0, 2, 3,//back
@@ -46,6 +49,8 @@ static unsigned int cubeIndices[] =
    16, 17, 18, 16, 18, 19,//bottom
    20, 21, 22, 20, 22, 23//front
 };
+
+
 
 static Vertex cubeVertices[] =
 {
@@ -88,9 +93,14 @@ static Vertex cubeVertices[] =
 
 Renderer::Renderer()
 {
+	std::cout << "OpenGL Vendor: " << glGetString(GL_VENDOR) << std::endl;
+	std::cout << "OpenGL Renderer: " << glGetString(GL_RENDERER) << std::endl;
+	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
+	std::cout << "OpenGL Shading Language Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+
 	shader_NONE = nullptr;
 	shader_TEXTURED_ALBEDO = new Shader("shaders/TEXTURED_ALBEDO.shader");
-	shader_TEXTURED_LIT_FOG = new Shader("shaders/TEXTURED_LIT_FOG.shader");
+	shader_TEXTURED_LIT_FOG = new Shader("shaders/TEXTURED_LIT_FOG.shader", "shaders/PROXIMITY_TESSELATION.shader");
 	shader_TEXTURED_LIT_TRANSPARENT_FOG = new Shader("shaders/TEXTURED_LIT_TRANSPARENT_FOG.shader");
 
 
@@ -124,6 +134,9 @@ Renderer::Renderer()
 	//color
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 4, GL_FLOAT, false, Vertex::sizeInBytes, (const void*)(8 * sizeof(float)));
+
+	glPatchParameteri(GL_PATCH_VERTICES, 4);
+	glPointSize(10);
 }
 
 Renderer::~Renderer()
@@ -140,7 +153,10 @@ Renderer::~Renderer()
 
 void Renderer::drawTexturedBrush(TexturedBrush* tb)                  
 {
-	glDisable(GL_CULL_FACE);
+	glFrontFace(GL_CW);
+	if(debugWireFrameMode)
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+
 	glBindVertexArray(texBrushVaoID);
 	tb->bindTexture(0);
 	glm::vec3 pos = tb->getPos();
@@ -152,6 +168,7 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 
 	switch ((RenderType)tb->getRenderType())
 	{
+
 	case RenderType::NONE:
 		break;
 
@@ -164,7 +181,10 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("modelMatrix", modelMatrix);
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("viewMatrix", Application3D::getInstance()->getViewMatrix());
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
+		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
+		shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 30);
+		shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 60);
+		glDrawArrays(GL_PATCHES, 0, 24);
 		break;
 
 	case RenderType::TEXTURED_LIT_TRANSPARENT_FOG:
@@ -174,4 +194,11 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 	default:
 		break;
 	}
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glFrontFace(GL_CCW);
+}
+
+void Renderer::doDebugInputs(Input* input)
+{
+	if (input->wasKeyPressed(INPUT_KEY_T)) debugWireFrameMode = !debugWireFrameMode;
 }

@@ -21,6 +21,10 @@ struct Vertex
 	static constexpr unsigned int sizeInBytes = 12 * sizeof(float);
 };
 
+namespace aie
+{
+	class Input;
+};
 
 /*Singleton class for miscelanious rendering requests for different render types with different shaders*/
 class Renderer
@@ -31,19 +35,21 @@ public:
 	static void close() { if (singletonInstance)delete singletonInstance; }
 
 	void drawTexturedBrush(class TexturedBrush* tb);
-
+	void doDebugInputs(aie::Input* input);
 	Renderer();
 	~Renderer();
 private:
+
+	bool debugWireFrameMode = false;
 
 	unsigned int texBrushVaoID = 0;
 	unsigned int texBrushIboID = 0;
 	unsigned int texBrushVboID = 0;
 
-	class Shader* shader_NONE;
-	class Shader* shader_TEXTURED_ALBEDO;
-	class Shader* shader_TEXTURED_LIT_FOG;
-	class Shader* shader_TEXTURED_LIT_TRANSPARENT_FOG;
+	class Shader* shader_NONE = nullptr;
+	class Shader* shader_TEXTURED_ALBEDO = nullptr;
+	class Shader* shader_TEXTURED_LIT_FOG = nullptr;
+	class Shader* shader_TEXTURED_LIT_TRANSPARENT_FOG = nullptr;
 
 	static Renderer* singletonInstance;
 };
