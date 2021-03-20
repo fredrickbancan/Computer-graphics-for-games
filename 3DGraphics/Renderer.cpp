@@ -154,7 +154,24 @@ Renderer::~Renderer()
 	glDeleteVertexArrays(1, &texBrushVaoID);//vao
 }
 
-void Renderer::drawTexturedBrush(TexturedBrush* tb)                  
+void Renderer::drawLightsAsPoints(const std::vector<struct PointLight*> lights)
+{
+	
+	for (std::vector<PointLight*>::const_iterator i = lights.begin(); i != lights.end(); ++i)
+	{
+		PointLight* p = *i;
+		glm::mat4 transform = glm::mat4(1);
+		transform = glm::inverse(glm::lookAt(glm::vec3(0), p->pos - Application3D::getInstance()->getCamPos(), glm::vec3(0, 1, 0)));
+		transform = glm::rotate(transform, 90.0F, glm::vec3(1,0,0));
+		Gizmos::addDisk(p->pos, 0.075, 3, glm::vec4(p->color, 1), &transform);
+
+		if (!debugLightMode)continue;
+		Gizmos::addSphere(p->pos, p->fallOffStart, 16, 16, glm::vec4(0,0,0,0));
+		Gizmos::addSphere(p->pos, p->fallOffEnd, 16, 16, glm::vec4(0,0,0,0));
+	}
+}
+
+void Renderer::drawTexturedBrush(TexturedBrush* tb)
 {
 	constexpr int maxLights = 4;
 	glm::mat4 pointLightMats[maxLights]{glm::mat4(0)};
@@ -220,4 +237,5 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 void Renderer::doDebugInputs(Input* input)
 {
 	if (input->wasKeyPressed(INPUT_KEY_T)) debugWireFrameMode = !debugWireFrameMode;
+	if (input->wasKeyPressed(INPUT_KEY_L)) debugLightMode = !debugLightMode;
 }

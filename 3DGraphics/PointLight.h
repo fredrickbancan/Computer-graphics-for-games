@@ -14,3 +14,20 @@ struct PointLight
 
 	glm::mat4 getMatrix() { return glm::mat4(pos.x, pos.y, pos.z, 0, color.r, color.g, color.b, 0, fallOffStart, fallOffEnd, luminance, 0, 0, 0, 0, 0); }
 };
+
+/*
+
+Point light matrix layout:
+
+pos.x			color.r			fallOffStart		0
+
+
+pos.y			color.g			fallOffEnd			0
+
+
+pos.z			color.b			luminance			0
+
+
+0				0				0					0
+
+*/

@@ -1,1 +1,1 @@
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\temp\3DGraphics\x64\Debug\3DGraphics.exe
+D:\Freds projects\Computer-graphics-for-games\temp\3DGraphics\x64\Debug\3DGraphics.exe

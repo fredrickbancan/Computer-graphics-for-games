@@ -1,2 +1,0 @@
-C:\Users\disckord\Desktop\Physics for games\Workspace\aieBootstrap-master\temp\Project3D\x64\Debug\Project3D.exe
-C:\Users\disckord\Desktop\Physics for games\Workspace\aieBootstrap-master\temp\Project3D\x64\Debug\Project3D.pdb

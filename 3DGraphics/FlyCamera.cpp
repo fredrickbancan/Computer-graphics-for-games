@@ -20,8 +20,8 @@ void FlyCamera::onUpdate(float ptnt, float deltaTime)
 
 	//get input and update pitch,yaw and movevec here
 	if (moveVec.x == 0.0F) moveVec.x = (int)(input->isKeyDown(aie::INPUT_KEY_D)) - (int)(input->isKeyDown(aie::INPUT_KEY_A));
-	if (moveVec.y == 0.0F) moveVec.z = (int)(input->isKeyDown(aie::INPUT_KEY_W)) - (int)(input->isKeyDown(aie::INPUT_KEY_S));
-	if (moveVec.z == 0.0F) moveVec.y = (int)(input->isKeyDown(aie::INPUT_KEY_SPACE)) - (int)(input->isKeyDown(aie::INPUT_KEY_LEFT_CONTROL));
+	if (moveVec.z == 0.0F) moveVec.z = (int)(input->isKeyDown(aie::INPUT_KEY_W)) - (int)(input->isKeyDown(aie::INPUT_KEY_S));
+	if (moveVec.y == 0.0F) moveVec.y = (int)(input->isKeyDown(aie::INPUT_KEY_SPACE)) - (int)(input->isKeyDown(aie::INPUT_KEY_LEFT_CONTROL));
 	if (moveVec != glm::vec3(0,0,0)) glm::normalize(moveVec);
 
 	pitch -= MouseHelper::get()->getYDelta() * mouseSensitivity;

@@ -61,9 +61,11 @@ bool Application3D::startup()
 	texturedBrushes.push_back(new TexturedBrush(0, 2.0F, 0.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
 	texturedBrushes.push_back(new TexturedBrush(8, 2.0F, 4.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
 	texturedBrushes.push_back(new TexturedBrush(-8, 2.0F, 4.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
-	pointLights.push_back(new PointLight({ 0,10,0 }, {1,1,1}, 5, 25, 0.6));
-	pointLights.push_back(new PointLight({ 15,2, -25}, {0.6F,0.4F,0.3F}, 4, 16, 0.5F));
-	pointLights.push_back(new PointLight({ -25,50, 25 }, {0.1F,0.2F,0.9F}, 0.1F, 32, 0.4F));
+	texturedBrushes.push_back(new TexturedBrush(15, 2.0F, -25, 2.0F, 2.0F, 2.0F, "trchimken.png"));
+
+	pointLights.push_back(new PointLight({ 0,10,0 }, {1,1,1}, 5, 40, 1.0));//white middle light
+	//pointLights.push_back(new PointLight({ 15,5, -25}, {0.6F,0.4F,0.3F}, 4, 25, 0.7F));//orange fire light
+	//pointLights.push_back(new PointLight({ -25,15, 25 }, {0.1F,0.2F,0.9F}, 50, 100, 0.6F));//blue sky light
 	return true;
 }
 
@@ -157,7 +159,7 @@ void Application3D::doWorldRenderUpdate(float timeStep)
 	}
 	Gizmos::addTransform(mat4(1));// add a transform so that we can see the axis
 	guiHud->onWorldRenderUpdate(timeStep);
-
+	Renderer::getInstance()->drawLightsAsPoints(pointLights);
 }
 
 void Application3D::pauseWorld()

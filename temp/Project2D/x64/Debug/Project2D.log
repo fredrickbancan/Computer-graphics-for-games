@@ -1,6 +1,0 @@
-﻿  Application2D.cpp
-C:\Users\disckord\Desktop\Physics for games\Workspace\aieBootstrap-master\Project2D\Application2D.cpp(88,46): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  main.cpp
-  Generating Code...
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  Project2D.vcxproj -> C:\Users\disckord\Desktop\Physics for games\Workspace\aieBootstrap-master\temp\Project2D\x64\Debug\Project2D.exe

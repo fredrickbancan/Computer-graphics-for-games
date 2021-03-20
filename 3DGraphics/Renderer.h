@@ -2,6 +2,7 @@
 #include <glm/vec4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
+#include <vector>
 enum class RenderType : int
 {
 	NONE,
@@ -34,6 +35,7 @@ public:
 	static Renderer* getInstance() { return singletonInstance; }
 	static void close() { if (singletonInstance)delete singletonInstance; }
 
+	void drawLightsAsPoints(const std::vector<struct PointLight*> lights);
 	void drawTexturedBrush(class TexturedBrush* tb);
 	void doDebugInputs(aie::Input* input);
 	Renderer();
@@ -41,6 +43,7 @@ public:
 private:
 
 	bool debugWireFrameMode = false;
+	bool debugLightMode = false;
 
 	unsigned int texBrushVaoID = 0;
 	unsigned int texBrushIboID = 0;

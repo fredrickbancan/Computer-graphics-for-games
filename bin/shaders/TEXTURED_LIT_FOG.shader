@@ -46,17 +46,26 @@ void main()
 	vNormal = normal;
 	vWorldPos = (modelMatrix * vec4(position, 1)).xyz;
 
-	vColor = color * 0.072F;
+	vColor = color * 0.05F;
+	vec3 vertToLight;
+	float dotToLight;
+	float distToLight;
+	float power;
 
-	
 	for (int i = 0; i < activeLights; i++)
 	{
-		vec3 vertToLight;
-		float dotToLight;
 		vertToLight = pointLights[i][0].xyz - vWorldPos;
+		distToLight = length(vertToLight);
+		power = (distToLight - pointLights[i][2][0]) / (pointLights[i][2][1] - pointLights[i][2][0]);
+		power = clamp(power, 0.0, 1.0);
+		//power = 1.0 - power;
+		power *= power;
 		dotToLight = clamp(dot(normalize(vertToLight), normal), 0, 1);
-		vColor += pointLights[i][1] * dotToLight * pointLights[i][2][2];
+		vColor += pointLights[i][1] * dotToLight * pointLights[i][2][2] * power;
 	}
+	vColor.r = clamp(vColor.r, 0, 1);
+	vColor.g = clamp(vColor.g, 0, 1);
+	vColor.b = clamp(vColor.b, 0, 1);
 	vColor.a = color.a;
 }
 

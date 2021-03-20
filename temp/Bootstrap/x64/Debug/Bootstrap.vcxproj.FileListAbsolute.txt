@@ -1,4 +1,1 @@
-C:\Users\disckord\Desktop\Physics for games\Workspace\aieBootstrap-master\temp\Bootstrap\x64\Debug\Bootstrap.lib
-C:\Users\disckord\Desktop\Physics for games\Workspace\aieBootstrap-master\temp\Bootstrap\x64\Debug\Bootstrap.pdb
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\temp\Bootstrap\x64\Debug\Bootstrap.lib
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\temp\Bootstrap\x64\Debug\Bootstrap.pdb
+D:\Freds projects\Computer-graphics-for-games\temp\Bootstrap\x64\Debug\Bootstrap.lib
