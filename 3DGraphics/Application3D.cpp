@@ -58,16 +58,16 @@ bool Application3D::startup()
 		}
 		
 	}
+	float wallSize = 5;
+	texturedBrushes.push_back(new TexturedBrush(wallSize*3, wallSize, -10.0F, wallSize, wallSize, wallSize, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(wallSize, wallSize, -10.0F, wallSize, wallSize, wallSize, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(-wallSize, wallSize, -10.0F, wallSize, wallSize, wallSize, "leafyrocks.png"));
+	texturedBrushes.push_back(new TexturedBrush(-wallSize*3, wallSize, -10.0F, wallSize, wallSize, wallSize, "trstone.png"));
 
-	texturedBrushes.push_back(new TexturedBrush(15, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
-	texturedBrushes.push_back(new TexturedBrush(5, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
-	texturedBrushes.push_back(new TexturedBrush(-5, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
-	texturedBrushes.push_back(new TexturedBrush(-15, 5.0F, -10.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
-
-	texturedBrushes.push_back(new TexturedBrush(15, 5.0F, 20.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
-	texturedBrushes.push_back(new TexturedBrush(5, 5.0F, 20.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
-	texturedBrushes.push_back(new TexturedBrush(-5, 5.0F, 20.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
-	texturedBrushes.push_back(new TexturedBrush(-15, 5.0F, 20.0F, 5.0F, 5.0F, 2.0F, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(wallSize*3, wallSize, 20.0F, wallSize, wallSize, wallSize, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(wallSize, wallSize, 20.0F, wallSize, wallSize, wallSize, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(-wallSize, wallSize, 20.0F, wallSize, wallSize, wallSize, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(-wallSize*3, wallSize, 20.0F, wallSize, wallSize, wallSize, "trstone.png"));
 
 	texturedBrushes.push_back(new TexturedBrush(0, 2.0F, 0.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
 	texturedBrushes.push_back(new TexturedBrush(8, 2.0F, 4.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));

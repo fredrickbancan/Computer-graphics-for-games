@@ -210,6 +210,8 @@
     <Image Include="..\bin\textures\grid.png" />
     <Image Include="..\bin\textures\ice.png" />
     <Image Include="..\bin\textures\image.png" />
+    <Image Include="..\bin\textures\leafyrocks.png" />
+    <Image Include="..\bin\textures\leafywall.png" />
     <Image Include="..\bin\textures\numbered_grid.tga" />
     <Image Include="..\bin\textures\rock_large.png" />
     <Image Include="..\bin\textures\rock_medium.png" />
