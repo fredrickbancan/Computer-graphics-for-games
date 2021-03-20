@@ -35,24 +35,38 @@ public:
 	static Renderer* getInstance() { return singletonInstance; }
 	static void close() { if (singletonInstance)delete singletonInstance; }
 
+	void onWindowResize(int width, int height);
 	void drawLightsAsPoints(const std::vector<struct PointLight*> lights);
 	void drawTexturedBrush(class TexturedBrush* tb);
 	void doDebugInputs(aie::Input* input);
+	void begin();
+	void end();
 	Renderer();
 	~Renderer();
 private:
-
+	void renderFullScreenQuadWithFrameBufTex();
+	void buildDitherTexture();
+	void setUpTexturedBrushRendering();
+	void setUpFullScreenQuadRendering();
 	bool debugWireFrameMode = false;
 	bool debugLightMode = false;
+
+	unsigned int ditherTexID = 0;
 
 	unsigned int texBrushVaoID = 0;
 	unsigned int texBrushIboID = 0;
 	unsigned int texBrushVboID = 0;
 
+	unsigned int fullScreenQuadVaoID = 0;
+	unsigned int fullScreenQuadVboID = 0;
+
 	class Shader* shader_NONE = nullptr;
 	class Shader* shader_TEXTURED_ALBEDO = nullptr;
 	class Shader* shader_TEXTURED_LIT_FOG = nullptr;
 	class Shader* shader_TEXTURED_LIT_TRANSPARENT_FOG = nullptr;
+	class Shader* shader_FULLSCREENQUAD = nullptr;
+
+	class FrameBuffer* fullScreenBuffer;
 
 	static Renderer* singletonInstance;
 };

@@ -177,6 +177,7 @@
     <ClCompile Include="GuiHud.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MouseHelper.cpp" />
+    <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="TexturedBrush.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="FlyCamera.h" />
     <ClInclude Include="GuiHud.h" />
     <ClInclude Include="MouseHelper.h" />
+    <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shaders.h" />
@@ -221,6 +223,7 @@
     <Image Include="..\bin\textures\trstone.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\bin\shaders\FULLSCREENQUAD.shader" />
     <None Include="..\bin\shaders\PROXIMITY_TESSELLATION.shader" />
     <None Include="..\bin\shaders\TEXTURED_ALBEDO.shader" />
     <None Include="..\bin\shaders\TEXTURED_LIT_FOG.shader" />

@@ -60,6 +60,9 @@
     <ClCompile Include="Application3D.cpp">
       <Filter>Source Files\World</Filter>
     </ClCompile>
+    <ClCompile Include="FrameBuffer.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application3D.h">
@@ -88,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="PointLight.h">
       <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameBuffer.h">
+      <Filter>Header Files\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +187,9 @@
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="..\bin\shaders\PROXIMITY_TESSELLATION.shader">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\shaders\FULLSCREENQUAD.shader">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>

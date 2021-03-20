@@ -12,6 +12,7 @@
 #include "Application3D.h"
 #include "Input.h"
 #include "PointLight.h"
+#include "FrameBuffer.h"
 using namespace aie;
 
 Renderer* Renderer::singletonInstance = nullptr;
@@ -92,6 +93,25 @@ static Vertex cubeVertices[] =
 	Vertex({-0.5F, -0.5F, 0.5F}, {1,1}, {0,0,1}, {1,1,1,1})
 };
 
+static Vertex quadVertices[] =
+{
+	//front face
+	Vertex({-0.5F, 0.5F, 0.0F}, {1,0}, {0,0,1}, {1,1,1,1}),
+	Vertex({0.5F, 0.5F, 0.0F}, {0,0}, {0,0,1}, {1,1,1,1}),
+	Vertex({0.5F, -0.5F, 0.0F}, {0,1}, {0,0,1}, {1,1,1,1}),
+	Vertex({-0.5F, -0.5F, 0.0F}, {1,1}, {0,0,1}, {1,1,1,1})
+};
+
+static unsigned char ditherPattern[] = {
+			 0, 32,  8, 40,  2, 34, 10, 42,   /* 8x8 Bayer ordered dithering  */
+			48, 16, 56, 24, 50, 18, 58, 26,  /* pattern.  Each input pixel   */
+			12, 44,  4, 36, 14, 46,  6, 38,  /* is scaled to the 0..63 range */
+			60, 28, 52, 20, 62, 30, 54, 22,  /* before looking in this table */
+			 3, 35, 11, 43,  1, 33,  9, 41,   /* to determine the action.     */
+			51, 19, 59, 27, 49, 17, 57, 25,
+			 15, 47,  7, 39, 13, 45,  5, 37,
+			63, 31, 55, 23, 61, 29, 53, 21 };
+
 Renderer::Renderer()
 {
 	int maxVertUniformComps = 0; glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &maxVertUniformComps);
@@ -105,8 +125,66 @@ Renderer::Renderer()
 	shader_TEXTURED_ALBEDO = new Shader("shaders/TEXTURED_ALBEDO.shader");
 	shader_TEXTURED_LIT_FOG = new Shader("shaders/TEXTURED_LIT_FOG.shader", "shaders/PROXIMITY_TESSELLATION.shader");
 	shader_TEXTURED_LIT_TRANSPARENT_FOG = new Shader("shaders/TEXTURED_LIT_TRANSPARENT_FOG.shader");
+	shader_FULLSCREENQUAD = new Shader("shaders/FULLSCREENQUAD.shader");
+	shader_FULLSCREENQUAD->bind();
+	shader_FULLSCREENQUAD->setUniform1i("uTexture", 0);
+	shader_FULLSCREENQUAD->setUniform1i("ditherTexture", 1);
+	setUpTexturedBrushRendering();
+	setUpFullScreenQuadRendering();
+	glPointSize(10);
+}
 
+Renderer::~Renderer()
+{
+	if (shader_TEXTURED_ALBEDO) delete shader_TEXTURED_ALBEDO;
+	if (shader_TEXTURED_LIT_FOG) delete shader_TEXTURED_LIT_FOG;
+	if (shader_TEXTURED_LIT_TRANSPARENT_FOG) delete shader_TEXTURED_LIT_TRANSPARENT_FOG;
+	if (shader_FULLSCREENQUAD) delete shader_FULLSCREENQUAD;
 
+	//deleting buffers
+	glDeleteBuffers(1, &texBrushIboID);//index buffer
+	glDeleteBuffers(1, &texBrushVboID);//vbo 
+	glDeleteVertexArrays(1, &texBrushVaoID);//vao
+
+	glDeleteTextures(1, &ditherTexID);
+
+	delete fullScreenBuffer;
+}
+
+void Renderer::renderFullScreenQuadWithFrameBufTex()
+{
+	glBindVertexArray(texBrushVaoID);
+	shader_FULLSCREENQUAD->bind();
+	shader_FULLSCREENQUAD->setUniform1f("ditherScale", 1.0F + (1.0F - fullScreenBuffer->getResolutionFactor()));
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, ditherTexID);
+	glDepthMask(false);
+	glDrawArrays(GL_QUADS, 0, 4);
+	glDepthMask(true);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(GL_TEXTURE0);
+}
+
+void Renderer::buildDitherTexture()
+{
+	glGenTextures(1, &ditherTexID);
+	glActiveTexture(GL_TEXTURE1);
+
+	glBindTexture(GL_TEXTURE_2D, ditherTexID);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16, 8, 8, 0, GL_RED, GL_UNSIGNED_BYTE, ditherPattern);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(GL_TEXTURE0);
+}
+
+void Renderer::setUpTexturedBrushRendering()
+{
 	//making vao
 	glGenVertexArrays(1, &texBrushVaoID);
 	glBindVertexArray(texBrushVaoID);
@@ -138,20 +216,45 @@ Renderer::Renderer()
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 4, GL_FLOAT, false, Vertex::sizeInBytes, (const void*)(8 * sizeof(float)));
 
+	//for teselation (setting to quads)
 	glPatchParameteri(GL_PATCH_VERTICES, 4);
-	glPointSize(10);
 }
 
-Renderer::~Renderer()
+void Renderer::setUpFullScreenQuadRendering()
 {
-	if (shader_TEXTURED_ALBEDO) delete shader_TEXTURED_ALBEDO;
-	if (shader_TEXTURED_LIT_FOG) delete shader_TEXTURED_LIT_FOG;
-	if (shader_TEXTURED_LIT_TRANSPARENT_FOG) delete shader_TEXTURED_LIT_TRANSPARENT_FOG;
+	fullScreenBuffer = new FrameBuffer(0.3333333F);
 
-	//deleting buffers
-	glDeleteBuffers(1, &texBrushIboID);//index buffer
-	glDeleteBuffers(1, &texBrushVboID);//vbo 
-	glDeleteVertexArrays(1, &texBrushVaoID);//vao
+	//making vao
+	glGenVertexArrays(1, &fullScreenQuadVaoID);
+	glBindVertexArray(fullScreenQuadVaoID);
+
+	//making vertex buffer
+	glGenBuffers(1, &fullScreenQuadVboID);
+	glBindBuffer(GL_ARRAY_BUFFER, fullScreenQuadVboID);
+	glBufferData(GL_ARRAY_BUFFER, Vertex::sizeInBytes * 4, quadVertices, GL_STATIC_DRAW);
+
+	//configuring layout for vbo
+	//pos
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, false, Vertex::sizeInBytes, (const void*)0);
+
+	//uv
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, false, Vertex::sizeInBytes, (const void*)(3 * sizeof(float)));
+
+	//normal
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, false, Vertex::sizeInBytes, (const void*)(5 * sizeof(float)));
+
+	//color
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 4, GL_FLOAT, false, Vertex::sizeInBytes, (const void*)(8 * sizeof(float)));
+	buildDitherTexture();
+}
+
+void Renderer::onWindowResize(int width, int height)
+{
+	fullScreenBuffer->resize(width, height);
 }
 
 void Renderer::drawLightsAsPoints(const std::vector<struct PointLight*> lights)
@@ -173,7 +276,7 @@ void Renderer::drawLightsAsPoints(const std::vector<struct PointLight*> lights)
 
 void Renderer::drawTexturedBrush(TexturedBrush* tb)
 {
-	constexpr int maxLights = 4;
+	constexpr int maxLights = 8;
 	glm::mat4 pointLightMats[maxLights]{glm::mat4(0)};
 
 	std::vector<PointLight*> pLights = Application3D::getInstance()->getPointLights();
@@ -216,8 +319,8 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("viewMatrix", Application3D::getInstance()->getViewMatrix());
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
 		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
-		shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 100);
-		shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 200);
+		shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 50);
+		shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 100);
 		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 50);
 		glDrawArrays(GL_PATCHES, 0, 24);
 		break;
@@ -238,4 +341,16 @@ void Renderer::doDebugInputs(Input* input)
 {
 	if (input->wasKeyPressed(INPUT_KEY_T)) debugWireFrameMode = !debugWireFrameMode;
 	if (input->wasKeyPressed(INPUT_KEY_L)) debugLightMode = !debugLightMode;
+}
+
+void Renderer::begin()
+{
+	fullScreenBuffer->bind();
+	fullScreenBuffer->clear();
+}
+
+void Renderer::end()
+{
+	fullScreenBuffer->unBindAndBindTexture();
+	renderFullScreenQuadWithFrameBufTex();
 }

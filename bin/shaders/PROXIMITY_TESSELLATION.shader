@@ -83,11 +83,11 @@ uniform float fogEnd;
 
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
-uniform mat4 pointLights[4]; 
+uniform mat4 pointLights[8]; 
 uniform int activeLights = 0;
 
-float positionResolution = 8192;
-float innacuracyOverDistanceFactor = 16;
+float positionResolution = 1024;
+float innacuracyOverDistanceFactor = 2;
 
 void main(void)
 {
@@ -135,20 +135,15 @@ void main(void)
     float dotToLight;
     float distToLight;
     float power;
-    float preservedAlpha = vColor.a;
     for (int i = 0; i < activeLights; i++)
     {
         vertToLight = pointLights[i][0].xyz - vWorldPos;
         distToLight = length(vertToLight);
         power = (distToLight - pointLights[i][2][0]) / (pointLights[i][2][1] - pointLights[i][2][0]);
         power = clamp(power, 0.0, 1.0);
-        //power = 1.0 - power;
+        power = 1.0 - power;
         power *= power;
         dotToLight = clamp(dot(normalize(vertToLight), normal), 0, 1);
         vColor += pointLights[i][1] * dotToLight * pointLights[i][2][2] * power;
     }
-    vColor.r = clamp(vColor.r, 0, 1);
-    vColor.g = clamp(vColor.g, 0, 1);
-    vColor.b = clamp(vColor.b, 0, 1);
-    vColor.a = preservedAlpha;
 }
