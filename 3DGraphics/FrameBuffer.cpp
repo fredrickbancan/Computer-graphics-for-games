@@ -89,7 +89,7 @@ void FrameBuffer::setUpFrameBuffer()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width * resolutionFactor, height * resolutionFactor, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
     glBindRenderbuffer(GL_RENDERBUFFER, depthBufferID);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width * resolutionFactor, height * resolutionFactor);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32F, width * resolutionFactor, height * resolutionFactor);
 
     glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);

@@ -38,6 +38,7 @@ public:
 	void onWindowResize(int width, int height);
 	void drawLightsAsPoints(const std::vector<struct PointLight*> lights);
 	void drawTexturedBrush(class TexturedBrush* tb);
+	void drawTexturedSurface(class TexturedSurface* ts);
 	void doDebugInputs(aie::Input* input);
 	void begin();
 	void end();
@@ -57,8 +58,8 @@ private:
 	unsigned int texBrushIboID = 0;
 	unsigned int texBrushVboID = 0;
 
-	unsigned int fullScreenQuadVaoID = 0;
-	unsigned int fullScreenQuadVboID = 0;
+	unsigned int texQuadVaoID = 0;
+	unsigned int texQuadVboID = 0;
 
 	class Shader* shader_NONE = nullptr;
 	class Shader* shader_TEXTURED_ALBEDO = nullptr;

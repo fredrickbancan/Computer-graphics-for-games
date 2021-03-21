@@ -16,11 +16,12 @@ out vec3 vWorldPos;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
+uniform mat3 normalMatrix;
 
 uniform mat4 pointLights[8];
 uniform int activeLights = 0;
-float positionResolution = 1024;
-float innacuracyOverDistanceFactor = 2;
+uniform float positionResolution;
+uniform float innacuracyOverDistanceFactor;
 
 out float visibility;//for fog
 
@@ -41,9 +42,8 @@ void main()
 	//apply nostalgic vertex jitter
 	gl_Position.xy = round(gl_Position.xy * (positionResolution / (distanceFromCam * innacuracyOverDistanceFactor))) / (positionResolution / (distanceFromCam * innacuracyOverDistanceFactor));
 
-
 	vTexCoord = uv;
-	vNormal = normal;
+	vNormal = normalize(normalMatrix * normal);
 	vWorldPos = (modelMatrix * vec4(position, 1)).xyz;
 
 	vColor = vec4(0);
@@ -60,7 +60,7 @@ void main()
 		power = clamp(power, 0.0, 1.0);
 		power = 1.0 - power;
 		power *= power;
-		dotToLight = clamp(dot(normalize(vertToLight), normal), 0, 1);
+		dotToLight = clamp(dot(normalize(vertToLight), vNormal), 0, 1);
 		vColor += color * pointLights[i][1] * dotToLight * pointLights[i][2][2] * power;
 	}
 	vColor.a = color.a;
@@ -81,14 +81,15 @@ noperspective in vec2 vTexCoord;
 in vec4 vColor;
 
 uniform sampler2D uTexture;
-
+uniform sampler2D ditherTexture;
 void main()  
 {  
-	vec4 textureColor = texture(uTexture, vTexCoord) * vColor;
+	vec4 textureColor = texture2D(uTexture, vTexCoord) * vColor;
 	if (textureColor.a < 0.01F)
 	{
 		discard;//cutout if texture has fully transparent texels
 	}
 	fragColor.rgb = mix(fogColor, textureColor.rgb, visibility);
+	fragColor += vec4(texture2D(ditherTexture, gl_FragCoord.xy / 8.0).r / 32.0 - (1.0 / 128.0));//dithering
 	fragColor.a = 1;
 }  

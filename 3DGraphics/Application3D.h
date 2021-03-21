@@ -38,6 +38,8 @@ protected:
 	float timeStep = 0.0333333F;
 	bool initialized = false;
 	std::vector<class TexturedBrush*> texturedBrushes;
+	std::vector<class TexturedSurface*> texturedSurfaces;
+	std::vector<class TexturedBrush*> rotatingTexturedBrushes;
 	std::vector<struct PointLight*> pointLights;
 private:
 	static Application3D* singletonInstance;

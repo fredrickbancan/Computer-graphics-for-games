@@ -3,9 +3,6 @@
 
 layout(vertices = 4) out;
 
-#define min4(a,b,c,d) min(min(min(a, b), c), d)
-#define max4(a,b,c,d) max(max(max(a, b), c), d)
-
 in vec4 vColor[];
 in vec2 vTexCoord[];
 in vec3 vNormal[];
@@ -16,6 +13,7 @@ uniform vec3 camWorldPos;
 uniform float fogStart;
 uniform float fogEnd;
 uniform float detailDist;
+
 out Tess
 {
     vec3 vWorldPos;
@@ -30,22 +28,18 @@ void main(void)
 
     if (gl_InvocationID == 0)
     {
-        //getting face bounds to clamp cam pos to face to get distance
-        float smallestX = min4(vWorldPos[0].x, vWorldPos[1].x, vWorldPos[2].x, vWorldPos[3].x);
-        float smallestY = min4(vWorldPos[0].y, vWorldPos[1].y, vWorldPos[2].y, vWorldPos[3].y);
-        float smallestZ = min4(vWorldPos[0].z, vWorldPos[1].z, vWorldPos[2].z, vWorldPos[3].z);
-        float biggestX = max4(vWorldPos[0].x, vWorldPos[1].x, vWorldPos[2].x, vWorldPos[3].x);
-        float biggestY = max4(vWorldPos[0].y, vWorldPos[1].y, vWorldPos[2].y, vWorldPos[3].y);
-        float biggestZ = max4(vWorldPos[0].z, vWorldPos[1].z, vWorldPos[2].z, vWorldPos[3].z);
-        vec3 camPosClampedToFace = vec3(clamp(camWorldPos.x, smallestX, biggestX), clamp(camWorldPos.y, smallestY, biggestY), clamp(camWorldPos.z, smallestZ, biggestZ));
-        float faceSize = distance(vWorldPos[1], vWorldPos[3]);//length of diagonal line of face
-        float distToFace = distance(camWorldPos, camPosClampedToFace);
+        vec3 avgCenter = (vWorldPos[0] + vWorldPos[1] + vWorldPos[2] + vWorldPos[3]) / 4;
+        float distToFace = distance(camWorldPos, avgCenter);
         float tessFactor = 1.0F - distToFace / detailDist;
+        float faceSize = distance(vWorldPos[1], vWorldPos[3]);//length of diagonal line of face
 
         tessFactor *= tessFactor;
-        float level = (faceSize / 1.41421356237) * tessFactor * 1.25;
-        if (distToFace > detailDist) level = 1;
+
+        float level = (faceSize / 1.4146) * tessFactor;
+        level = round(level / 2) * 2;//keep level in multiples of 2
         if (distToFace > fogEnd) level = 0;
+        else if (distToFace > detailDist) level = 1;
+        else level += int(level < 1);
         gl_TessLevelInner[0] = level;
         gl_TessLevelInner[1] = level;
         gl_TessLevelOuter[0] = level;
@@ -86,20 +80,20 @@ uniform mat4 modelMatrix;
 uniform mat4 pointLights[8]; 
 uniform int activeLights = 0;
 
-float positionResolution = 1024;
-float innacuracyOverDistanceFactor = 2;
+uniform float positionResolution;
+uniform float innacuracyOverDistanceFactor;
 
 void main(void)
 {
     //interpolate clip pos
-    vec4 xPosTop = mix(gl_in[0].gl_Position, gl_in[1].gl_Position, gl_TessCoord.x);// interpolate in horizontal direction between vert. 0 and 1
-    vec4 xPosBottom = mix(gl_in[3].gl_Position, gl_in[2].gl_Position, gl_TessCoord.x);// interpolate in horizontal direction between vert. 3 and 2
+    vec4 xPosTop = mix(gl_in[1].gl_Position, gl_in[0].gl_Position, gl_TessCoord.x);// interpolate in horizontal direction between vert. 0 and 1
+    vec4 xPosBottom = mix(gl_in[2].gl_Position, gl_in[3].gl_Position, gl_TessCoord.x);// interpolate in horizontal direction between vert. 3 and 2
     gl_Position = mix(xPosTop, xPosBottom, gl_TessCoord.y);// interpolate in vert direction
     //triangles do this: gl_Position = (gl_TessCoord.x * gl_in[0].gl_Position) + (gl_TessCoord.y * gl_in[1].gl_Position) + (gl_TessCoord.z * gl_in[2].gl_Position);
 
     //interpolate color
-    vec4 xColorTop = mix(In[0].color, In[1].color, gl_TessCoord.x);// interpolate in horizontal color between vert. 0 and 1
-    vec4 xColorBottom = mix(In[3].color, In[2].color, gl_TessCoord.x);// interpolate in horizontal color between vert. 3 and 2
+    vec4 xColorTop = mix(In[1].color, In[0].color, gl_TessCoord.x);// interpolate in horizontal color between vert. 0 and 1
+    vec4 xColorBottom = mix(In[2].color, In[3].color, gl_TessCoord.x);// interpolate in horizontal color between vert. 3 and 2
     vColor = mix(xColorTop, xColorBottom, gl_TessCoord.y);
     //triangles do this: vColor = (gl_TessCoord.x * In[0].color) + (gl_TessCoord.y * In[1].color) + (gl_TessCoord.z * In[2].color);
 
@@ -110,15 +104,14 @@ void main(void)
     //triangles do this: vTexCoord = (gl_TessCoord.x * In[0].vTexCoord) + (gl_TessCoord.y * In[1].vTexCoord) + (gl_TessCoord.z * In[2].vTexCoord);
 
     //interpolate world pos
-    vec3 wpTop = mix(In[0].vWorldPos, In[1].vWorldPos, gl_TessCoord.x);// interpolate in horizontal coord between vert. 0 and 1
-    vec3 wpBottom = mix(In[3].vWorldPos, In[2].vWorldPos, gl_TessCoord.x);// interpolate in horizontal coord between vert. 3 and 2
+    vec3 wpTop = mix(In[1].vWorldPos, In[0].vWorldPos, gl_TessCoord.x);// interpolate in horizontal coord between vert. 0 and 1
+    vec3 wpBottom = mix(In[2].vWorldPos, In[3].vWorldPos, gl_TessCoord.x);// interpolate in horizontal coord between vert. 3 and 2
     vec3 vWorldPos = mix(wpTop, wpBottom, gl_TessCoord.y);
 
     //interpolate normal
-    vec3 normalTop = mix(In[0].normal, In[1].normal, gl_TessCoord.x);// interpolate in horizontal coord between vert. 0 and 1
-    vec3 normalBottom = mix(In[3].normal, In[2].normal, gl_TessCoord.x);// interpolate in horizontal coord between vert. 3 and 2
+    vec3 normalTop = mix(In[1].normal, In[0].normal, gl_TessCoord.x);// interpolate in horizontal coord between vert. 0 and 1
+    vec3 normalBottom = mix(In[2].normal, In[3].normal, gl_TessCoord.x);// interpolate in horizontal coord between vert. 3 and 2
     vec3 normal = normalize(mix(normalTop, normalBottom, gl_TessCoord.y));
-
     //re-apply visibility for each tesselated vertex
     float distanceFromCam = length(gl_Position.xyz);
     visibility = (distanceFromCam - fogStart) / (fogEnd - fogStart);

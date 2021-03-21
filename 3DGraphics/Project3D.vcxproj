@@ -181,6 +181,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="TexturedBrush.cpp" />
+    <ClCompile Include="TexturedSurface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application3D.h" />
@@ -193,6 +194,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="TexturedBrush.h" />
+    <ClInclude Include="TexturedSurface.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\bin\textures\ball.png" />
@@ -222,7 +224,10 @@
     <Image Include="..\bin\textures\tankGreen.png" />
     <Image Include="..\bin\textures\tankRed.png" />
     <Image Include="..\bin\textures\trchimken.png" />
+    <Image Include="..\bin\textures\tricewall.png" />
+    <Image Include="..\bin\textures\trsnow.png" />
     <Image Include="..\bin\textures\trstone.png" />
+    <Image Include="..\bin\textures\trstone2.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\bin\shaders\FULLSCREENQUAD.shader" />

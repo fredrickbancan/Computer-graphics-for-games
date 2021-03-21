@@ -63,6 +63,9 @@
     <ClCompile Include="FrameBuffer.cpp">
       <Filter>Source Files\Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="TexturedSurface.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application3D.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="FrameBuffer.h">
       <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedSurface.h">
+      <Filter>Header Files\World</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +185,15 @@
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="..\bin\textures\leafywall.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\tricewall.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\trsnow.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\trstone2.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>

@@ -29,11 +29,11 @@ void FlyCamera::onUpdate(float ptnt, float deltaTime)
 
 	if (pitch >= 90.0F)
 	{
-		pitch = 89.9999F;
+		pitch = 89.995F;
 	}
 	else if (pitch <= -90.0F)
 	{
-		pitch = -89.9999F;
+		pitch = -89.995F;
 	}
 
 	Camera::onUpdate(ptnt, deltaTime);

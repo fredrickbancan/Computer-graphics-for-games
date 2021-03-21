@@ -13,7 +13,7 @@ Camera::Camera(glm::vec3 pos, float pitch, float yaw) : position(pos), prevTickP
 	makeProjectionMatrix();
 }
 
-Camera::Camera(glm::vec3 pos) : position(pos), prevTickPosition(pos), pitch(0), yaw(0)
+Camera::Camera(glm::vec3 pos) : position(pos), prevTickPosition(pos), pitch(0), yaw(-90)
 {
 	updateVectors();
 	makeProjectionMatrix();

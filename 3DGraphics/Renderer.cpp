@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "gl_core_4_4.h"
 #include "TexturedBrush.h"
+#include "TexturedSurface.h"
 #include "Texture.h"
 #include <string>
 #include "Gizmos.h"
@@ -15,6 +16,8 @@
 #include "FrameBuffer.h"
 using namespace aie;
 
+constexpr int maxLights = 8;
+//TODO: clean up duplicate code
 Renderer* Renderer::singletonInstance = nullptr;
 
 // cube vertices
@@ -125,10 +128,10 @@ Renderer::Renderer()
 	shader_TEXTURED_ALBEDO = new Shader("shaders/TEXTURED_ALBEDO.shader");
 	shader_TEXTURED_LIT_FOG = new Shader("shaders/TEXTURED_LIT_FOG.shader", "shaders/PROXIMITY_TESSELLATION.shader");
 	shader_TEXTURED_LIT_TRANSPARENT_FOG = new Shader("shaders/TEXTURED_LIT_TRANSPARENT_FOG.shader");
+	shader_TEXTURED_LIT_FOG->bind();
+	shader_TEXTURED_LIT_FOG->setUniform1i("uTexture", 0);
+	shader_TEXTURED_LIT_FOG->setUniform1i("ditherTexture", 1);
 	shader_FULLSCREENQUAD = new Shader("shaders/FULLSCREENQUAD.shader");
-	shader_FULLSCREENQUAD->bind();
-	shader_FULLSCREENQUAD->setUniform1i("uTexture", 0);
-	shader_FULLSCREENQUAD->setUniform1i("ditherTexture", 1);
 	setUpTexturedBrushRendering();
 	setUpFullScreenQuadRendering();
 	glPointSize(10);
@@ -155,13 +158,11 @@ void Renderer::renderFullScreenQuadWithFrameBufTex()
 {
 	glBindVertexArray(texBrushVaoID);
 	shader_FULLSCREENQUAD->bind();
-	shader_FULLSCREENQUAD->setUniform1f("ditherScale", 1.0F + (1.0F - fullScreenBuffer->getResolutionFactor()));
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, ditherTexID);
 	glDepthMask(false);
 	glDrawArrays(GL_QUADS, 0, 4);
 	glDepthMask(true);
-	glBindTexture(GL_TEXTURE_2D, 0);
 	glActiveTexture(GL_TEXTURE0);
 }
 
@@ -222,15 +223,15 @@ void Renderer::setUpTexturedBrushRendering()
 
 void Renderer::setUpFullScreenQuadRendering()
 {
-	fullScreenBuffer = new FrameBuffer(0.3333333F);
+	fullScreenBuffer = new FrameBuffer(0.33333F);
 
 	//making vao
-	glGenVertexArrays(1, &fullScreenQuadVaoID);
-	glBindVertexArray(fullScreenQuadVaoID);
+	glGenVertexArrays(1, &texQuadVaoID);
+	glBindVertexArray(texQuadVaoID);
 
 	//making vertex buffer
-	glGenBuffers(1, &fullScreenQuadVboID);
-	glBindBuffer(GL_ARRAY_BUFFER, fullScreenQuadVboID);
+	glGenBuffers(1, &texQuadVboID);
+	glBindBuffer(GL_ARRAY_BUFFER, texQuadVboID);
 	glBufferData(GL_ARRAY_BUFFER, Vertex::sizeInBytes * 4, quadVertices, GL_STATIC_DRAW);
 
 	//configuring layout for vbo
@@ -266,7 +267,7 @@ void Renderer::drawLightsAsPoints(const std::vector<struct PointLight*> lights)
 		glm::mat4 transform = glm::mat4(1);
 		transform = glm::inverse(glm::lookAt(glm::vec3(0), p->pos - Application3D::getInstance()->getCamPos(), glm::vec3(0, 1, 0)));
 		transform = glm::rotate(transform, 90.0F, glm::vec3(1,0,0));
-		Gizmos::addDisk(p->pos, 0.075, 3, glm::vec4(p->color, 1), &transform);
+		Gizmos::addDisk(p->pos, 0.075, 6, glm::vec4(p->color, 1), &transform);
 
 		if (!debugLightMode)continue;
 		Gizmos::addSphere(p->pos, p->fallOffStart, 16, 16, glm::vec4(0,0,0,0));
@@ -276,7 +277,6 @@ void Renderer::drawLightsAsPoints(const std::vector<struct PointLight*> lights)
 
 void Renderer::drawTexturedBrush(TexturedBrush* tb)
 {
-	constexpr int maxLights = 8;
 	glm::mat4 pointLightMats[maxLights]{glm::mat4(0)};
 
 	std::vector<PointLight*> pLights = Application3D::getInstance()->getPointLights();
@@ -288,17 +288,19 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 		if (++iter >= maxLights) break;
 	}
 
-	glFrontFace(GL_CW);
 	if(debugWireFrameMode)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
 
 	glBindVertexArray(texBrushVaoID);
 	tb->bindTexture(0);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, ditherTexID);
 	glm::vec3 pos = tb->getPos();
 	glm::vec3 exts = tb->getExtents();
 	float alpha = tb->getOpacity();
 	glm::mat4 modelMatrix = glm::mat4(1);
 	modelMatrix = glm::translate(modelMatrix, pos);
+	modelMatrix *= tb->getRotationMatrix();
 	modelMatrix = glm::scale(modelMatrix, exts * 2.0F);
 
 	switch ((RenderType)tb->getRenderType())
@@ -316,12 +318,15 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 		shader_TEXTURED_LIT_FOG->setUniformMat4fArray("pointLights", iter, &pointLightMats[0][0][0]);
 		shader_TEXTURED_LIT_FOG->setUniform1i("activeLights", iter);
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("modelMatrix", modelMatrix);
+		shader_TEXTURED_LIT_FOG->setUniformMat3f("normalMatrix", glm::mat3(glm::transpose(glm::inverse(modelMatrix))));
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("viewMatrix", Application3D::getInstance()->getViewMatrix());
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
 		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
 		shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 50);
 		shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 100);
-		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 50);
+		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 60);
+		shader_TEXTURED_LIT_FOG->setUniform1f("positionResolution", 256);
+		shader_TEXTURED_LIT_FOG->setUniform1f("innacuracyOverDistanceFactor", 1.0F);
 		glDrawArrays(GL_PATCHES, 0, 24);
 		break;
 
@@ -334,7 +339,78 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 	}
 	if (debugWireFrameMode)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glFrontFace(GL_CCW);
+
+	glActiveTexture(GL_TEXTURE0);
+}
+
+void Renderer::drawTexturedSurface(TexturedSurface* ts)
+{
+	glm::mat4 pointLightMats[maxLights]{ glm::mat4(0) };
+
+	std::vector<PointLight*> pLights = Application3D::getInstance()->getPointLights();
+
+	int iter = 0;
+	for (std::vector<PointLight*>::iterator i = pLights.begin(); i != pLights.end(); ++i)
+	{
+		pointLightMats[iter] = (*i)->getMatrix();
+		if (++iter >= maxLights) break;
+	}
+	if (debugWireFrameMode)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+
+	glBindVertexArray(texQuadVaoID);
+	ts->bindTexture(0);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, ditherTexID);
+	glm::vec3 pos = ts->getPos();
+	glm::vec2 exts = ts->getExtents();
+	float alpha = ts->getOpacity();
+	glm::mat4 modelMatrix = glm::mat4(1);
+	modelMatrix = glm::translate(modelMatrix, pos);
+	modelMatrix *= ts->getRotationMatrix();
+	modelMatrix = glm::scale(modelMatrix, glm::vec3(exts.x * 2.0F, exts.y * 2.0F, 1));
+
+	glDisable(GL_CULL_FACE);
+	switch ((RenderType)ts->getRenderType())
+	{
+
+	case RenderType::NONE:
+		break;
+
+	case RenderType::TEXTURED_ALBEDO:
+		shader_TEXTURED_ALBEDO->bind();
+		break;
+
+	case RenderType::TEXTURED_LIT_FOG:
+		shader_TEXTURED_LIT_FOG->bind();
+		shader_TEXTURED_LIT_FOG->setUniformMat4fArray("pointLights", iter, &pointLightMats[0][0][0]);
+		shader_TEXTURED_LIT_FOG->setUniform1i("activeLights", iter);
+		shader_TEXTURED_LIT_FOG->setUniformMat4f("modelMatrix", modelMatrix);
+		shader_TEXTURED_LIT_FOG->setUniformMat3f("normalMatrix", glm::mat3(glm::transpose(glm::inverse(modelMatrix))));
+		shader_TEXTURED_LIT_FOG->setUniformMat4f("viewMatrix", Application3D::getInstance()->getViewMatrix());
+		shader_TEXTURED_LIT_FOG->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
+		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
+		shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 50);
+		shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 100);
+		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 60);
+		shader_TEXTURED_LIT_FOG->setUniform1f("positionResolution", 256);
+		shader_TEXTURED_LIT_FOG->setUniform1f("innacuracyOverDistanceFactor", 1.0F);
+		glDrawArrays(GL_PATCHES, 0, 4);
+		break;
+
+	case RenderType::TEXTURED_LIT_TRANSPARENT_FOG:
+		shader_TEXTURED_LIT_TRANSPARENT_FOG->bind();
+		break;
+
+	default:
+		break;
+	}
+	if (debugWireFrameMode)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_CULL_FACE);
 }
 
 void Renderer::doDebugInputs(Input* input)

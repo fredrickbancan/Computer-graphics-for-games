@@ -23,14 +23,10 @@ void main()
 layout(location = 0) out vec4 color;
 
 in vec2 vTexCoord;
-uniform float ditherScale;
 uniform sampler2D uTexture;
-uniform sampler2D ditherTexture;
-
 void main()
 {
 	vec4 texColor = texture2D(uTexture, vTexCoord);
 	color = texColor;
-	color += vec4(texture2D(ditherTexture, gl_FragCoord.xy / 8.0 * ditherScale).r / 32.0 - (1.0 / 128.0));//dithering
 	color.a = 1;
 }
