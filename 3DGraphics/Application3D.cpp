@@ -40,17 +40,18 @@ bool Application3D::startup()
 	glfwSwapInterval(0);
 	setShowCursor(false);
 	cam = new FlyCamera(glm::vec3(0, 2, 10));
+	cam->setMoveSpeed(4.0F);
 	cam->setAspectRatio((float)getWindowWidth() / (float)getWindowHeight());
 	glViewport(0, 0, getWindowWidth(), getWindowHeight());
 	guiHud = new GuiHud(this);
 	input = Input::getInstance();
 	initialized = true;
 
-	int segments = 5;
-	float floorSize = 100.0F;
+	int segments = 4;
+	float floorSize = 32.0F;
 	float halfFloorSize = floorSize * 0.5F;
 	float panelSize = floorSize / segments;
-	float roomheight = 20;
+	float roomheight = 16;
 	for (int x = 0; x < segments; x++)//building floor
 	{
 		for (int z = 0; z < segments; z++)
@@ -86,32 +87,32 @@ bool Application3D::startup()
 		texturedSurfaces.push_back(new TexturedSurface(halfFloorSize, roomheight * 0.5F, -halfFloorSize + z * panelSize + (panelSize * 0.5F), panelSize * 0.5F, roomheight * 0.5F, 0, -90, 0, "tricewall.png"));
 	}
 
-	float wallSize = 5;
-	texturedBrushes.push_back(new TexturedBrush(wallSize*3, wallSize, -10.0F, wallSize, wallSize, wallSize, "trstone.png"));
-	texturedBrushes.push_back(new TexturedBrush(wallSize, wallSize, -10.0F, wallSize, wallSize, wallSize, "leafyrocks.png"));
-	texturedBrushes.push_back(new TexturedBrush(-wallSize, wallSize, -10.0F, wallSize, wallSize, wallSize, "leafyrocks.png"));
-	texturedBrushes.push_back(new TexturedBrush(-wallSize*3, wallSize, -10.0F, wallSize, wallSize, wallSize, "trstone.png"));
+	float wallSize = 3;
+	texturedBrushes.push_back(new TexturedBrush(wallSize*3, wallSize, -4.0F, wallSize, wallSize, wallSize, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(wallSize, wallSize, -4.0F, wallSize, wallSize, wallSize, "leafyrocks.png"));
+	texturedBrushes.push_back(new TexturedBrush(-wallSize, wallSize, -4.0F, wallSize, wallSize, wallSize, "leafyrocks.png"));
+	texturedBrushes.push_back(new TexturedBrush(-wallSize*3, wallSize, -4.0F, wallSize, wallSize, wallSize, "trstone.png"));
 
-	texturedBrushes.push_back(new TexturedBrush(wallSize*3, wallSize, 20.0F, wallSize, wallSize, wallSize, "leafyrocks.png"));
-	texturedBrushes.push_back(new TexturedBrush(wallSize, wallSize, 20.0F, wallSize, wallSize, wallSize, "trstone.png"));
-	texturedBrushes.push_back(new TexturedBrush(-wallSize, wallSize, 20.0F, wallSize, wallSize, wallSize, "trstone.png"));
-	texturedBrushes.push_back(new TexturedBrush(-wallSize*3, wallSize, 20.0F, wallSize, wallSize, wallSize, "leafyrocks.png"));
+	texturedBrushes.push_back(new TexturedBrush(wallSize*3, wallSize, 8.0F, wallSize, wallSize, wallSize, "leafyrocks.png"));
+	texturedBrushes.push_back(new TexturedBrush(wallSize, wallSize, 8.0F, wallSize, wallSize, wallSize, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(-wallSize, wallSize, 8.0F, wallSize, wallSize, wallSize, "trstone.png"));
+	texturedBrushes.push_back(new TexturedBrush(-wallSize*3, wallSize, 8.0F, wallSize, wallSize, wallSize, "leafyrocks.png"));
+	wallSize *= 0.5F;
+	texturedBrushes.push_back(new TexturedBrush(0, 2.0F, 0.0F, wallSize, wallSize, wallSize, "trchimken.png"));
+	texturedBrushes.push_back(new TexturedBrush(8, 2.0F, 4.0F, wallSize, wallSize, wallSize, "trchimken.png"));
+	texturedBrushes.push_back(new TexturedBrush(-8, 2.0F, 4.0F, wallSize, wallSize, wallSize, "trchimken.png"));
+	texturedBrushes.push_back(new TexturedBrush(15, 2.0F, -25, wallSize, wallSize, wallSize, "trchimken.png"));
 
-	texturedBrushes.push_back(new TexturedBrush(0, 2.0F, 0.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
-	texturedBrushes.push_back(new TexturedBrush(8, 2.0F, 4.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
-	texturedBrushes.push_back(new TexturedBrush(-8, 2.0F, 4.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
-	texturedBrushes.push_back(new TexturedBrush(15, 2.0F, -25, 2.0F, 2.0F, 2.0F, "trchimken.png"));
+	rotatingTexturedBrushes.push_back(new TexturedBrush(30, 4.0F, -6.0F, wallSize, wallSize, wallSize, "trchimken.png"));
+	rotatingTexturedBrushes.push_back(new TexturedBrush(30, 4.0F, 0.0F, wallSize, wallSize, wallSize, "trchimken.png"));
+	rotatingTexturedBrushes.push_back(new TexturedBrush(30, 4.0F, 6.0F, wallSize, wallSize, wallSize, "trchimken.png"));
 
-	rotatingTexturedBrushes.push_back(new TexturedBrush(30, 4.0F, -6.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
-	rotatingTexturedBrushes.push_back(new TexturedBrush(30, 4.0F, 0.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
-	rotatingTexturedBrushes.push_back(new TexturedBrush(30, 4.0F, 6.0F, 2.0F, 2.0F, 2.0F, "trchimken.png"));
-
-	pointLights.push_back(new PointLight({ 0,10, 5 }, {1,1,1}, 6, 17, 1.2));//white middle light
-	pointLights.push_back(new PointLight({ 15,5, -25}, {0.9F,0.5F,0.2F}, 12, 16, 1.3F));//orange fire light
-	pointLights.push_back(new PointLight({ 25,12, 30 }, {0.25F,0.22F,0.15F}, 30, 70, 0.6F));//warmish white corner room light
-	pointLights.push_back(new PointLight({ -25,12, -25 }, { 0.152F, 0.211F, 0.468F }, 30, 70, 1.1F));//blue corner room light
+	pointLights.push_back(new PointLight({ 0,4, 5 }, {1,1,1}, 6, 17, 1.0));//white middle light
+	pointLights.push_back(new PointLight({ 15,5, -25}, {0.9F,0.5F,0.2F}, 12, 16, 1.0F));//orange fire light
+	pointLights.push_back(new PointLight({ 25,12, 30 }, {0.25F,0.22F,0.15F}, 16, 64, 0.6F));//warmish white corner room light
+	pointLights.push_back(new PointLight({ -25,12, -25 }, { 0.152F, 0.211F, 0.468F }, 16, 64, 1.0F));//blue corner room light
 	pointLights.push_back(new PointLight({ 33, 1, 0 }, { 0.152F, 0.611F, 0.568F }, 3, 12, 0.9F));//rotating brush area light bottom green ish
-	pointLights.push_back(new PointLight({ 31, 7, 0 }, { 0.652F, 0.611F, 0.568F }, 3, 12, 1.1F));//rotating brush area light top gold ish
+	pointLights.push_back(new PointLight({ 31, 7, 0 }, { 0.652F, 0.611F, 0.568F }, 3, 12, 1.0F));//rotating brush area light top gold ish
 	return true;
 }
 

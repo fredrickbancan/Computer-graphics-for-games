@@ -35,11 +35,12 @@ void main(void)
 
         tessFactor *= tessFactor;
 
-        float level = (faceSize / 1.4146) * tessFactor;
-        level = round(level / 2) * 2;//keep level in multiples of 2
+        float level = (faceSize / 1.4146);
+
         if (distToFace > fogEnd) level = 0;
         else if (distToFace > detailDist) level = 1;
         else level += int(level < 1);
+
         gl_TessLevelInner[0] = level;
         gl_TessLevelInner[1] = level;
         gl_TessLevelOuter[0] = level;

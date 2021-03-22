@@ -324,8 +324,8 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
 		shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 50);
 		shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 100);
-		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 60);
-		shader_TEXTURED_LIT_FOG->setUniform1f("positionResolution", 256);
+		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 50);
+		shader_TEXTURED_LIT_FOG->setUniform1f("positionResolution", 128);
 		shader_TEXTURED_LIT_FOG->setUniform1f("innacuracyOverDistanceFactor", 1.0F);
 		glDrawArrays(GL_PATCHES, 0, 24);
 		break;
@@ -393,8 +393,8 @@ void Renderer::drawTexturedSurface(TexturedSurface* ts)
 		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
 		shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 50);
 		shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 100);
-		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 60);
-		shader_TEXTURED_LIT_FOG->setUniform1f("positionResolution", 256);
+		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 50);
+		shader_TEXTURED_LIT_FOG->setUniform1f("positionResolution", 128);
 		shader_TEXTURED_LIT_FOG->setUniform1f("innacuracyOverDistanceFactor", 1.0F);
 		glDrawArrays(GL_PATCHES, 0, 4);
 		break;
