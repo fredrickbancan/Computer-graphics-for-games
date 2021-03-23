@@ -19,8 +19,8 @@ void GuiHud::onWorldRenderUpdate(float timeStep)
 {
 	// demonstrate 2D gizmos 
 	//(crosshair)
-	aie::Gizmos::add2DCircle(glm::vec2(refApp->getWindowWidth() / 2, refApp->getWindowHeight() / 2), 3, 16, glm::vec4(0, 0, 0, 1));
-	aie::Gizmos::add2DCircle(glm::vec2(refApp->getWindowWidth() / 2, refApp->getWindowHeight() / 2), 2, 16, glm::vec4(0, 1, 0, 1));
+//	aie::Gizmos::add2DCircle(glm::vec2(refApp->getWindowWidth() / 2, refApp->getWindowHeight() / 2), 3, 16, glm::vec4(0, 0, 0, 1));
+	//aie::Gizmos::add2DCircle(glm::vec2(refApp->getWindowWidth() / 2, refApp->getWindowHeight() / 2), 2, 16, glm::vec4(0, 1, 0, 1));
 }
 
 void GuiHud::draw()

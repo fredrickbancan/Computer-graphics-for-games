@@ -12,6 +12,7 @@
 #include "TexturedBrush.h"
 #include "TexturedSurface.h"
 #include "PointLight.h"
+#include "TexturedBillboardVert.h"
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
@@ -41,17 +42,18 @@ bool Application3D::startup()
 	setShowCursor(false);
 	cam = new FlyCamera(glm::vec3(0, 2, 4));
 	cam->setMoveSpeed(4.0F);
+	cam->setFov(60);
 	cam->setAspectRatio((float)getWindowWidth() / (float)getWindowHeight());
 	glViewport(0, 0, getWindowWidth(), getWindowHeight());
 	guiHud = new GuiHud(this);
 	input = Input::getInstance();
 	initialized = true;
 
-	int segments = 4;
+	int segments = 8;
 	float floorSize = 32.0F;
 	float halfFloorSize = floorSize * 0.5F;
 	float panelSize = floorSize / segments;
-	float roomheight = 8;
+	float roomheight = 4;
 	for (int x = 0; x < segments; x++)//building floor
 	{
 		for (int z = 0; z < segments; z++)
@@ -86,13 +88,26 @@ bool Application3D::startup()
 	{
 		texturedSurfaces.push_back(new TexturedSurface(halfFloorSize, roomheight * 0.5F, -halfFloorSize + z * panelSize + (panelSize * 0.5F), panelSize * 0.5F, roomheight * 0.5F, 0, -90, 0, "tricewall.png"));
 	}
+	
+	//icicles near rotating blocks
+	texturedSurfaces.push_back(new TexturedSurface(9.5, roomheight - 1, -2, 0.5, 1, 0, 90, 0, "icedrip.png"));
+	texturedSurfaces.push_back(new TexturedSurface(14, roomheight - 1, 2, 0.5, 1, 0, 180, 0, "icedrip.png"));
 
+	//leafs at the center on the roof near white light
+	texturedSurfaces.push_back(new TexturedSurface(-1.5, roomheight - 1, -1, 1, 1, 0, 90, 0, "leafcorner.png"));
+	texturedSurfaces.push_back(new TexturedSurface(-1.5, roomheight - 0.01, -1, 1, 1, 90, 0, 0, "fern2.png"));
+
+	//leaves dangling down at the wolf footstep doorway
+	texturedSurfaces.push_back(new TexturedSurface(10, roomheight - 1.5, 8, 2, 1.5, 0, 0, 0, "leafvines.png"));
+	verticalBillboards.push_back(new TexturedBillboardVert(10, roomheight - 1.5, 8, 2, 1.5, 0, 0, "leafvines.png"));
+	
 	float wallSize = 2;
 	texturedBrushes.push_back(new TexturedBrush(wallSize*3, wallSize, -4.0F, wallSize, wallSize, wallSize, "trstone.png"));
 	texturedBrushes.push_back(new TexturedBrush(wallSize, wallSize, -4.0F, wallSize, wallSize, wallSize, "leafyrocks.png"));
 	texturedBrushes.push_back(new TexturedBrush(-wallSize, wallSize, -4.0F, wallSize, wallSize, wallSize, "leafyrocks.png"));
 	texturedBrushes.push_back(new TexturedBrush(-wallSize*3, wallSize, -4.0F, wallSize, wallSize, wallSize, "trstone.png"));
 
+	texturedBrushes.push_back(new TexturedBrush(wallSize*3 + 8, wallSize, 8.0F, wallSize, wallSize, wallSize, "leafyrocks.png"));
 	texturedBrushes.push_back(new TexturedBrush(wallSize*3, wallSize, 8.0F, wallSize, wallSize, wallSize, "leafyrocks.png"));
 	texturedBrushes.push_back(new TexturedBrush(wallSize, wallSize, 8.0F, wallSize, wallSize, wallSize, "trstone.png"));
 	texturedBrushes.push_back(new TexturedBrush(-wallSize, wallSize, 8.0F, wallSize, wallSize, wallSize, "trstone.png"));
@@ -107,12 +122,15 @@ bool Application3D::startup()
 	rotatingTexturedBrushes.push_back(new TexturedBrush(13, wallSize*2, 0.0F, wallSize, wallSize, wallSize, "trchimken.png"));
 	rotatingTexturedBrushes.push_back(new TexturedBrush(13, wallSize*2, 2.0F, wallSize, wallSize, wallSize, "trchimken.png"));
 	wallSize *= 2.0F;
-	pointLights.push_back(new PointLight({ 0,4, 2 }, {1,1,1}, 3, 7, 0.8));//white middle light
-	pointLights.push_back(new PointLight({ 12,wallSize * 2 + 1, -14}, {0.9F,0.5F,0.2F}, 3,12, 1.0F));//orange fire light
-	pointLights.push_back(new PointLight({ 14,7, 14 }, {0.25F,0.22F,0.15F}, 16, 32, 1.0F));//warmish white corner room light
-	pointLights.push_back(new PointLight({ -14,7, -14 }, { 0.152F, 0.211F, 0.368F }, 16, 64, 0.6F));//blue corner room light
+
+	pointLights.push_back(new PointLight({ 0,3, 2 }, {1,1,1}, 3, 7, 0.8));//white middle light
+	pointLights.push_back(new PointLight({ 15,wallSize * 2 + 1, -12}, {0.9F,0.5F,0.2F}, 3,12, 1.0F));//orange fire light
+	pointLights.push_back(new PointLight({ 14,3, 14 }, {0.25F,0.22F,0.15F}, 16, 32, 1.0F));//warmish white corner room light
+	pointLights.push_back(new PointLight({ -14,3, -14 }, { 0.152F, 0.211F, 0.368F }, 16, 64, 0.6F));//blue corner room light
 	pointLights.push_back(new PointLight({ 14, 0.5F, 0 }, { 0.152F, 0.611F, 0.568F }, 4, 6, 0.7F));//rotating brush area light bottom green ish
-	pointLights.push_back(new PointLight({ 12, wallSize * 2 + 1, 0 }, { 0.949, 0.780, 0.352 }, 3, 5, 0.9F));//rotating brush area light top gold ish
+	pointLights.push_back(new PointLight({ 12, wallSize * 2 + 1, 0 }, { 0.949, 0.780, 0.352 }, 2, 3, 0.9F));//rotating brush area candle light top 
+	pointLights.push_back(new PointLight({ 11, 2, 5}, { 0.949, 0.780, 0.352 }, 1, 4, 0.9F));//rotating brush area candle light top 
+
 	return true;
 }
 
@@ -139,6 +157,12 @@ void Application3D::shutdown()
 	for (std::vector<TexturedSurface*>::iterator i = texturedSurfaces.begin(); i != texturedSurfaces.end(); ++i)
 	{
 		TexturedSurface* p = *i;
+		delete p;
+	}
+
+	for (std::vector<TexturedBillboardVert*>::iterator i = verticalBillboards.begin(); i != verticalBillboards.end(); ++i)
+	{
+		TexturedBillboardVert* p = *i;
 		delete p;
 	}
 
@@ -185,6 +209,10 @@ void Application3D::draw()
 	for (std::vector<TexturedSurface*>::iterator i = texturedSurfaces.begin(); i != texturedSurfaces.end(); ++i)
 	{
 		Renderer::getInstance()->drawTexturedSurface(*i);
+	}
+	for (std::vector<TexturedBillboardVert*>::iterator i = verticalBillboards.begin(); i != verticalBillboards.end(); ++i)
+	{
+		Renderer::getInstance()->drawVerticalBillboard(*i);
 	}
 	Renderer::getInstance()->end();
 	Gizmos::draw(cam->getProjectionMatrix() * cam->getViewMatrix());// draw 3D gizmos

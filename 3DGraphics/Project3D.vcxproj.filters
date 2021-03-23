@@ -101,6 +101,9 @@
     <ClInclude Include="TexturedSurface.h">
       <Filter>Header Files\World</Filter>
     </ClInclude>
+    <ClInclude Include="TexturedBillboardVert.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\bin\textures\ball.png">
@@ -194,6 +197,36 @@
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="..\bin\textures\trstone2.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\snowrockmedium.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\snowrocklarge.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\snowrocksmall.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\leafvines.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\leafcorner.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\leafvinelong.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\leafvineshort.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\fern.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\fern2.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\icedrip.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>

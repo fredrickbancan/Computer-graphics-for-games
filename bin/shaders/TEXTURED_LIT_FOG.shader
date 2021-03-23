@@ -78,7 +78,6 @@ uniform vec3 fogColor;
 //noperspective disables texture perspective for ps1 effect, must first impliment tesselation.
 noperspective in vec2 vTexCoord;
 in vec4 vColor;
-
 uniform sampler2D uTexture;
 uniform sampler2D ditherTexture;
 void main()  
@@ -91,4 +90,5 @@ void main()
 	fragColor.rgb = mix(fogColor, textureColor.rgb, visibility);
 	fragColor += vec4(texture2D(ditherTexture, gl_FragCoord.xy / 8.0).r / 32.0 - (1.0 / 128.0));//dithering
 	fragColor.a = 1;
+	if (visibility < 0) fragColor.r = 1.0;
 }  

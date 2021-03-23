@@ -193,6 +193,7 @@
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shaders.h" />
+    <ClInclude Include="TexturedBillboardVert.h" />
     <ClInclude Include="TexturedBrush.h" />
     <ClInclude Include="TexturedSurface.h" />
   </ItemGroup>
@@ -206,12 +207,19 @@
     <Image Include="..\bin\textures\bullet.png" />
     <Image Include="..\bin\textures\car.png" />
     <Image Include="..\bin\textures\colorbands.png" />
+    <Image Include="..\bin\textures\fern.png" />
+    <Image Include="..\bin\textures\fern2.png" />
     <Image Include="..\bin\textures\glass.png" />
     <Image Include="..\bin\textures\grass.png" />
     <Image Include="..\bin\textures\grass_side.png" />
     <Image Include="..\bin\textures\grid.png" />
     <Image Include="..\bin\textures\ice.png" />
+    <Image Include="..\bin\textures\icedrip.png" />
     <Image Include="..\bin\textures\image.png" />
+    <Image Include="..\bin\textures\leafcorner.png" />
+    <Image Include="..\bin\textures\leafvinelong.png" />
+    <Image Include="..\bin\textures\leafvines.png" />
+    <Image Include="..\bin\textures\leafvineshort.png" />
     <Image Include="..\bin\textures\leafyrocks.png" />
     <Image Include="..\bin\textures\leafywall.png" />
     <Image Include="..\bin\textures\numbered_grid.tga" />
@@ -219,6 +227,9 @@
     <Image Include="..\bin\textures\rock_medium.png" />
     <Image Include="..\bin\textures\rock_small.png" />
     <Image Include="..\bin\textures\ship.png" />
+    <Image Include="..\bin\textures\snowrocklarge.png" />
+    <Image Include="..\bin\textures\snowrockmedium.png" />
+    <Image Include="..\bin\textures\snowrocksmall.png" />
     <Image Include="..\bin\textures\tankBeige.png" />
     <Image Include="..\bin\textures\tankBlue.png" />
     <Image Include="..\bin\textures\tankGreen.png" />

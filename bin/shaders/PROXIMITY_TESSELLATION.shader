@@ -7,12 +7,12 @@ in vec4 vColor[];
 in vec2 vTexCoord[];
 in vec3 vNormal[];
 in vec3 vWorldPos[];
-
 uniform vec3 camWorldPos;
 
 uniform float fogStart;
 uniform float fogEnd;
-uniform float detailDist;
+uniform float detailStart;
+uniform float detailEnd;
 
 out Tess
 {
@@ -30,18 +30,11 @@ void main(void)
     {
         vec3 avgCenter = (vWorldPos[0] + vWorldPos[1] + vWorldPos[2] + vWorldPos[3]) / 4;
         float distToFace = distance(camWorldPos, avgCenter);
-        float tessFactor = distToFace / detailDist;
+        float detail = distToFace < detailStart ? 1 : distToFace < detailEnd ? 0.5 : 0;
         float faceSize = distance(vWorldPos[1], vWorldPos[3]);//length of diagonal line of face
-        tessFactor *= tessFactor * tessFactor;
-        tessFactor = 1.0 - tessFactor;
-        tessFactor = ceil(tessFactor * 3) / 3;
+        float level = (faceSize / (sqrt(2) * 0.5)) * detail;
 
-        float level = ((faceSize * 2) / (1.4146 )) * tessFactor;
-
-        //if the distance is more than fogend (drawdistance) then tess to 0 to ignore face, if its further than detailDist it should have no tesselation (1), otherwise keep face level above 0
-        if (distToFace > fogEnd) level = 0;
-        else if (distToFace > detailDist) level = 1;
-        else level += int(level < 1);
+        level = distToFace > fogEnd ? 0 : level < 1 ? 1 : level;
 
         gl_TessLevelInner[0] = level;
         gl_TessLevelInner[1] = level;
@@ -77,7 +70,7 @@ out float visibility;
 
 uniform float fogStart;
 uniform float fogEnd;
-
+uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 uniform mat4 pointLights[8]; 
@@ -87,12 +80,6 @@ uniform float positionResolution;
 
 void main(void)
 {
-    //interpolate clip pos
-    vec4 xPosTop = mix(gl_in[1].gl_Position, gl_in[0].gl_Position, gl_TessCoord.x);// interpolate in horizontal direction between vert. 0 and 1
-    vec4 xPosBottom = mix(gl_in[2].gl_Position, gl_in[3].gl_Position, gl_TessCoord.x);// interpolate in horizontal direction between vert. 3 and 2
-    gl_Position = mix(xPosTop, xPosBottom, gl_TessCoord.y);// interpolate in vert direction
-    //triangles do this: gl_Position = (gl_TessCoord.x * gl_in[0].gl_Position) + (gl_TessCoord.y * gl_in[1].gl_Position) + (gl_TessCoord.z * gl_in[2].gl_Position);
-
     //interpolate color
     vec4 xColorTop = mix(In[1].color, In[0].color, gl_TessCoord.x);// interpolate in horizontal color between vert. 0 and 1
     vec4 xColorBottom = mix(In[2].color, In[3].color, gl_TessCoord.x);// interpolate in horizontal color between vert. 3 and 2
@@ -114,6 +101,9 @@ void main(void)
     vec3 normalTop = mix(In[1].normal, In[0].normal, gl_TessCoord.x);// interpolate in horizontal coord between vert. 0 and 1
     vec3 normalBottom = mix(In[2].normal, In[3].normal, gl_TessCoord.x);// interpolate in horizontal coord between vert. 3 and 2
     vec3 normal = normalize(mix(normalTop, normalBottom, gl_TessCoord.y));
+
+    gl_Position = projectionMatrix * viewMatrix  * vec4(vWorldPos, 1);//recalculate gl_pos because we dont want the innacuracy of the vertex shader to stack on this one.
+
     //re-apply visibility for each tesselated vertex
     float distanceFromCam = length(gl_Position.xyz);
     visibility = (distanceFromCam - fogStart) / (fogEnd - fogStart);
@@ -121,7 +111,7 @@ void main(void)
     visibility = 1.0 - visibility;
     visibility *= visibility;
 
-    //apply nostalgic vertex jitter to each tesselated vertex  
+    //re-apply nostalgic vertex jitter to each tesselated vertex  
     distanceFromCam = clamp(gl_Position.w, -1, 1000);
     gl_Position.xy = round(gl_Position.xy * (positionResolution / distanceFromCam )) / (positionResolution / distanceFromCam );
 

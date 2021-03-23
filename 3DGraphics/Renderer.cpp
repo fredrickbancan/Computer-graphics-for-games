@@ -2,6 +2,7 @@
 #include "gl_core_4_4.h"
 #include "TexturedBrush.h"
 #include "TexturedSurface.h"
+#include "TexturedBillboardVert.h"
 #include "Texture.h"
 #include <string>
 #include "Gizmos.h"
@@ -131,10 +132,14 @@ Renderer::Renderer()
 	shader_TEXTURED_LIT_FOG->bind();
 	shader_TEXTURED_LIT_FOG->setUniform1i("uTexture", 0);
 	shader_TEXTURED_LIT_FOG->setUniform1i("ditherTexture", 1);
+	shader_TEXTURED_LIT_FOG->setUniform1f("detailStart", 2);
+	shader_TEXTURED_LIT_FOG->setUniform1f("detailEnd", 16);
+	shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 20);
+	shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 52);
+	shader_TEXTURED_LIT_FOG->setUniform1f("positionResolution", 128);
 	shader_FULLSCREENQUAD = new Shader("shaders/FULLSCREENQUAD.shader");
 	setUpTexturedBrushRendering();
 	setUpFullScreenQuadRendering();
-	glPointSize(10);
 }
 
 Renderer::~Renderer()
@@ -261,17 +266,14 @@ void Renderer::onWindowResize(int width, int height)
 void Renderer::drawLightsAsPoints(const std::vector<struct PointLight*> lights)
 {
 	
+	if (!debugLightMode)return;
 	for (std::vector<PointLight*>::const_iterator i = lights.begin(); i != lights.end(); ++i)
 	{
 		PointLight* p = *i;
 		glm::mat4 transform = glm::mat4(1);
 		transform = glm::inverse(glm::lookAt(glm::vec3(0), p->pos - Application3D::getInstance()->getCamPos(), glm::vec3(0, 1, 0)));
 		transform = glm::rotate(transform, 90.0F, glm::vec3(1,0,0));
-		Gizmos::addDisk(p->pos, 0.075, 6, glm::vec4(p->color, 1), &transform);
-
-		if (!debugLightMode)continue;
-		Gizmos::addSphere(p->pos, p->fallOffStart, 16, 16, glm::vec4(0,0,0,0));
-		Gizmos::addSphere(p->pos, p->fallOffEnd, 16, 16, glm::vec4(0,0,0,0));
+		Gizmos::addDisk(p->pos, 0.025, 6, glm::vec4(p->color, 1), &transform);
 	}
 }
 
@@ -322,10 +324,6 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("viewMatrix", Application3D::getInstance()->getViewMatrix());
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
 		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
-		shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 50);
-		shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 100);
-		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 16);
-		shader_TEXTURED_LIT_FOG->setUniform1f("positionResolution", 128);
 		glDrawArrays(GL_PATCHES, 0, 24);
 		break;
 
@@ -390,10 +388,72 @@ void Renderer::drawTexturedSurface(TexturedSurface* ts)
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("viewMatrix", Application3D::getInstance()->getViewMatrix());
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
 		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
-		shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 16);
-		shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 26);
-		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 16);
-		shader_TEXTURED_LIT_FOG->setUniform1f("positionResolution", 128);
+		glDrawArrays(GL_PATCHES, 0, 4);
+		break;
+
+	case RenderType::TEXTURED_LIT_TRANSPARENT_FOG:
+		shader_TEXTURED_LIT_TRANSPARENT_FOG->bind();
+		break;
+
+	default:
+		break;
+	}
+	if (debugWireFrameMode)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_CULL_FACE);
+}
+
+void Renderer::drawVerticalBillboard(TexturedBillboardVert* vb)
+{
+	glm::mat4 pointLightMats[maxLights]{ glm::mat4(0) };
+
+	std::vector<PointLight*> pLights = Application3D::getInstance()->getPointLights();
+
+	int iter = 0;
+	for (std::vector<PointLight*>::iterator i = pLights.begin(); i != pLights.end(); ++i)
+	{
+		pointLightMats[iter] = (*i)->getMatrix();
+		if (++iter >= maxLights) break;
+	}
+	if (debugWireFrameMode)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+
+	glBindVertexArray(texQuadVaoID);
+	vb->bindTexture(0);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, ditherTexID);
+	glm::vec3 pos = vb->getPos();
+	glm::vec2 exts = vb->getExtents();
+	float alpha = vb->getOpacity();
+	glm::mat4 modelMatrix = glm::mat4(1);
+	modelMatrix = glm::translate(modelMatrix, pos);
+	modelMatrix *= vb->getRotationMatrix();
+	modelMatrix = glm::scale(modelMatrix, glm::vec3(exts.x * 2.0F, exts.y * 2.0F, 1));
+
+	glm::mat4 viewMatNoVertRot = Application3D::getInstance()->getViewMatrix();
+	glDisable(GL_CULL_FACE);
+	switch ((RenderType)vb->getRenderType())
+	{
+
+	case RenderType::NONE:
+		break;
+
+	case RenderType::TEXTURED_ALBEDO:
+		shader_TEXTURED_ALBEDO->bind();
+		break;
+
+	case RenderType::TEXTURED_LIT_FOG:
+		shader_TEXTURED_LIT_FOG->bind();
+		shader_TEXTURED_LIT_FOG->setUniformMat4fArray("pointLights", iter, &pointLightMats[0][0][0]);
+		shader_TEXTURED_LIT_FOG->setUniform1i("activeLights", iter);
+		shader_TEXTURED_LIT_FOG->setUniformMat4f("modelMatrix", modelMatrix);
+		shader_TEXTURED_LIT_FOG->setUniformMat3f("normalMatrix", glm::mat3(glm::transpose(glm::inverse(modelMatrix))));
+		shader_TEXTURED_LIT_FOG->setUniformMat4f("viewMatrix", viewMatNoVertRot);
+		shader_TEXTURED_LIT_FOG->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
+		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
 		glDrawArrays(GL_PATCHES, 0, 4);
 		break;
 

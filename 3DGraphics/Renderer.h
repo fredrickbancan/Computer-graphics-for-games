@@ -39,6 +39,7 @@ public:
 	void drawLightsAsPoints(const std::vector<struct PointLight*> lights);
 	void drawTexturedBrush(class TexturedBrush* tb);
 	void drawTexturedSurface(class TexturedSurface* ts);
+	void drawVerticalBillboard(class TexturedBillboardVert* vb);
 	void doDebugInputs(aie::Input* input);
 	glm::vec2 getRenderFrameSize();
 	void begin();

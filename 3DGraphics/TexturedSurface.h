@@ -6,7 +6,7 @@ namespace aie
 {
 	class Texture;
 }
-/*Textured brush is a convex peice of geometry, in this case an AABB, with a texutre and possibly physical material properties.*/
+/*A double-sided (in rendering) flat textured quadlirateral face*/
 class TexturedSurface
 {
 public:
