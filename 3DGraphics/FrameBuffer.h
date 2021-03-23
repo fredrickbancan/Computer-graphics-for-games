@@ -1,5 +1,5 @@
 #pragma once
-
+#include "glm/vec2.hpp"
 class FrameBuffer
 {
 public:
@@ -10,6 +10,7 @@ public:
 	void clear();
 	void unBindAndBindTexture();
 	void resize(int width, int height); 
+	glm::vec2 getSize();
 	float getResolutionFactor(){return resolutionFactor;}
 protected:
 	void setUpFrameBuffer();

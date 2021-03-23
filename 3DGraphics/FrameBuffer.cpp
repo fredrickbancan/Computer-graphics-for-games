@@ -11,8 +11,9 @@ FrameBuffer::FrameBuffer(int width, int height) : width(width), height(height)
 FrameBuffer::FrameBuffer(float resolutionFactor) : resolutionFactor(resolutionFactor)
 {
     glm::vec2 s = Application3D::getInstance()->getFrameSize();
-    width = (int)s.x;
-    height = (int)s.y;
+    s *= resolutionFactor;
+    this->width = s.x;
+    this->height = s.y;
     relativeResolution = true;
     setUpFrameBuffer();
 }
@@ -31,16 +32,12 @@ FrameBuffer::~FrameBuffer()
 void FrameBuffer::bind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
+    glm::vec2 s = Application3D::getInstance()->getFrameSize();
     if (relativeResolution)
     {
-        glm::vec2 s = Application3D::getInstance()->getFrameSize();
-        Application3D::getInstance()->onWindowResize(s.x * resolutionFactor, s.y * resolutionFactor);
+        s *= resolutionFactor;
     }
-    else
-    {
-
-		Application3D::getInstance()->onWindowResize(width, height);
-    }
+    Application3D::getInstance()->onWindowResize(s.x, s.y);
 }
 
 void FrameBuffer::clear()
@@ -60,19 +57,24 @@ void FrameBuffer::resize(int width, int height)
 {
     glBindTexture(GL_TEXTURE_2D, textureID);
     glBindRenderbuffer(GL_RENDERBUFFER, depthBufferID);
+
     if (relativeResolution)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width * resolutionFactor, height * resolutionFactor, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width * resolutionFactor, height * resolutionFactor);
+        this->width = width * resolutionFactor;
+        this->height = height * resolutionFactor;
     }
-    else
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width , height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
-    }
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, this->width, this->height);
+
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
+}
+
+glm::vec2 FrameBuffer::getSize()
+{
+    return glm::vec2(width, height);
 }
 
 void FrameBuffer::setUpFrameBuffer()
@@ -86,10 +88,10 @@ void FrameBuffer::setUpFrameBuffer()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width * resolutionFactor, height * resolutionFactor, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
     glBindRenderbuffer(GL_RENDERBUFFER, depthBufferID);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32F, width * resolutionFactor, height * resolutionFactor);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32F, width , height);
 
     glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);

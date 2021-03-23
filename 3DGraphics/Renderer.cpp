@@ -223,7 +223,7 @@ void Renderer::setUpTexturedBrushRendering()
 
 void Renderer::setUpFullScreenQuadRendering()
 {
-	fullScreenBuffer = new FrameBuffer(0.33333F);
+	fullScreenBuffer = new FrameBuffer(0.53333333333F);
 
 	//making vao
 	glGenVertexArrays(1, &texQuadVaoID);
@@ -324,9 +324,8 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
 		shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 50);
 		shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 100);
-		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 50);
+		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 16);
 		shader_TEXTURED_LIT_FOG->setUniform1f("positionResolution", 128);
-		shader_TEXTURED_LIT_FOG->setUniform1f("innacuracyOverDistanceFactor", 1.0F);
 		glDrawArrays(GL_PATCHES, 0, 24);
 		break;
 
@@ -391,11 +390,10 @@ void Renderer::drawTexturedSurface(TexturedSurface* ts)
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("viewMatrix", Application3D::getInstance()->getViewMatrix());
 		shader_TEXTURED_LIT_FOG->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
 		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
-		shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 50);
-		shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 100);
-		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 50);
+		shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 16);
+		shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 26);
+		shader_TEXTURED_LIT_FOG->setUniform1f("detailDist", 16);
 		shader_TEXTURED_LIT_FOG->setUniform1f("positionResolution", 128);
-		shader_TEXTURED_LIT_FOG->setUniform1f("innacuracyOverDistanceFactor", 1.0F);
 		glDrawArrays(GL_PATCHES, 0, 4);
 		break;
 
@@ -417,6 +415,11 @@ void Renderer::doDebugInputs(Input* input)
 {
 	if (input->wasKeyPressed(INPUT_KEY_T)) debugWireFrameMode = !debugWireFrameMode;
 	if (input->wasKeyPressed(INPUT_KEY_L)) debugLightMode = !debugLightMode;
+}
+
+glm::vec2 Renderer::getRenderFrameSize()
+{
+	return fullScreenBuffer->getSize();
 }
 
 void Renderer::begin()

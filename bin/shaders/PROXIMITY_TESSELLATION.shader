@@ -30,13 +30,15 @@ void main(void)
     {
         vec3 avgCenter = (vWorldPos[0] + vWorldPos[1] + vWorldPos[2] + vWorldPos[3]) / 4;
         float distToFace = distance(camWorldPos, avgCenter);
-        float tessFactor = 1.0F - distToFace / detailDist;
+        float tessFactor = distToFace / detailDist;
         float faceSize = distance(vWorldPos[1], vWorldPos[3]);//length of diagonal line of face
+        tessFactor *= tessFactor * tessFactor;
+        tessFactor = 1.0 - tessFactor;
+        tessFactor = ceil(tessFactor * 3) / 3;
 
-        tessFactor *= tessFactor;
+        float level = ((faceSize * 2) / (1.4146 )) * tessFactor;
 
-        float level = (faceSize / 1.4146);
-
+        //if the distance is more than fogend (drawdistance) then tess to 0 to ignore face, if its further than detailDist it should have no tesselation (1), otherwise keep face level above 0
         if (distToFace > fogEnd) level = 0;
         else if (distToFace > detailDist) level = 1;
         else level += int(level < 1);
@@ -82,7 +84,6 @@ uniform mat4 pointLights[8];
 uniform int activeLights = 0;
 
 uniform float positionResolution;
-uniform float innacuracyOverDistanceFactor;
 
 void main(void)
 {
@@ -122,7 +123,7 @@ void main(void)
 
     //apply nostalgic vertex jitter to each tesselated vertex  
     distanceFromCam = clamp(gl_Position.w, -1, 1000);
-    gl_Position.xy = round(gl_Position.xy * (positionResolution / (distanceFromCam * innacuracyOverDistanceFactor))) / (positionResolution / (distanceFromCam * innacuracyOverDistanceFactor));
+    gl_Position.xy = round(gl_Position.xy * (positionResolution / distanceFromCam )) / (positionResolution / distanceFromCam );
 
     //apply lighting to each tesselated vertex
     vec3 vertToLight;

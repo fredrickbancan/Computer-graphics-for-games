@@ -21,7 +21,6 @@ uniform mat3 normalMatrix;
 uniform mat4 pointLights[8];
 uniform int activeLights = 0;
 uniform float positionResolution;
-uniform float innacuracyOverDistanceFactor;
 
 out float visibility;//for fog
 
@@ -40,7 +39,7 @@ void main()
 
 	distanceFromCam = clamp(gl_Position.w, -0.1, 1000);
 	//apply nostalgic vertex jitter
-	gl_Position.xy = round(gl_Position.xy * (positionResolution / (distanceFromCam * innacuracyOverDistanceFactor))) / (positionResolution / (distanceFromCam * innacuracyOverDistanceFactor));
+	gl_Position.xy = round(gl_Position.xy * (positionResolution / distanceFromCam)) / (positionResolution / distanceFromCam);
 
 	vTexCoord = uv;
 	vNormal = normalize(normalMatrix * normal);

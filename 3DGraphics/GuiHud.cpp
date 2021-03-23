@@ -27,8 +27,9 @@ void GuiHud::draw()
 {
 	using namespace std;
 	glm::vec3 cp = Application3D::getInstance()->getCamPos();
+	glm::vec2 res = Application3D::getInstance()->getRenderFrameSize();
 	renderer->begin();
-	renderer->setRenderColour(0,1,0,1);
+	renderer->setRenderColour(1,1,1,0.5F);
 	renderer->drawText(font,  "w,a,s,d,space,ctrl,mouse to move", 0, refApp->getWindowHeight() - 25);
 	renderer->drawText(font,  "T to show tesselation/wireframe", 0, refApp->getWindowHeight() - 50);
 	renderer->drawText(font,  "L to show lights radius", 0, refApp->getWindowHeight() - 75);
@@ -36,6 +37,9 @@ void GuiHud::draw()
 	renderer->drawText(font, to_string(cp.x).c_str() , 0, refApp->getWindowHeight() - 125);
 	renderer->drawText(font, to_string(cp.y).c_str() , 0, refApp->getWindowHeight() - 150);
 	renderer->drawText(font, to_string(cp.z).c_str() , 0, refApp->getWindowHeight() - 175);
+	renderer->drawText(font, "Resolution: ", 0, refApp->getWindowHeight() - 200);
+	renderer->drawText(font, to_string(res.x).c_str() , 0, refApp->getWindowHeight() - 225);
+	renderer->drawText(font, to_string(res.y).c_str() , 0, refApp->getWindowHeight() - 250);
 	renderer->setRenderColour(1,1,1,1);
 	renderer->end();
 

@@ -1,10 +1,3 @@
-﻿  GuiHud.cpp
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(32,93): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(33,92): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(34,84): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(35,69): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(36,82): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(37,82): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(38,82): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  Project3D.vcxproj -> C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\temp\3DGraphics\x64\Debug\3DGraphics.exe
+﻿  Renderer.cpp
+D:\Freds projects\Computer-graphics-for-games\3DGraphics\Renderer.cpp(270,71): warning C4305: 'argument': truncation from 'double' to 'float'
+  Project3D.vcxproj -> D:\Freds projects\Computer-graphics-for-games\temp\3DGraphics\x64\Debug\3DGraphics.exe

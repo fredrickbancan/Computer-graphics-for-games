@@ -23,6 +23,7 @@ public:
 	void unPauseWorld();
 	void onWindowResize(int width, int height);
 	glm::vec2 getFrameSize();
+	glm::vec2 getRenderFrameSize();
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjectionMatrix();
 	glm::vec3 getCamPos();
