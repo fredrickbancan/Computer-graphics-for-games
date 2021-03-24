@@ -1,16 +1,26 @@
 #include "TexturedSurface.h"
-#include "Renderer.h"
+#include "Rendering.h"
 #include "Texture.h"
 #include "gl_core_4_4.h"
 #include "glm/ext.hpp"
 
 using namespace aie;
 
-TexturedSurface::TexturedSurface(float posX, float posY, float posZ, float extentX, float extentY, float rotX, float rotY, float rotZ, const std::string& texture, float opacity) : texName(texture), opacity(opacity)
+TexturedSurface::TexturedSurface(float posX, float posY, float posZ, float extentX, float extentY, float rotX, float rotY, float rotZ, const std::string& texture, bool billBoard, float opacity) : texName(texture), opacity(opacity)
 {
-	renderType = (int)(opacity < 1.0F ? (opacity <= 0.0F ? RenderType::NONE : RenderType::TEXTURED_LIT_TRANSPARENT_FOG) : RenderType::TEXTURED_LIT_FOG);
+	if (billBoard)
+	{
+		renderType = (int)RenderType::TEXTURED_LIT_FOG_BILLBOARD;
+	}
+	else
+	{
+		renderType = (int)(opacity < 1.0F ? (opacity <= 0.0F ? RenderType::NONE : RenderType::TEXTURED_LIT_FOG_TRANSPARENT) : RenderType::TEXTURED_LIT_FOG);
+	}
 	pos = glm::vec3(posX, posY, posZ);
 	dimentions = glm::vec2(extentX, extentY);
+
+
+	//Rotations on billboard surfaces are still important for manipulating the normal to change lighting on the texture
 	rotation = glm::mat4(1);
 	rotate(rotX, glm::vec3(1,0,0));
 	rotate(rotY, glm::vec3(0,1,0));
@@ -21,9 +31,17 @@ TexturedSurface::TexturedSurface(float posX, float posY, float posZ, float exten
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 }
 
-TexturedSurface::TexturedSurface(glm::vec3 pos, glm::vec2 extents, float rotationAngle, glm::vec3 rotationAxis, const std::string& texture, float opacity) : texName(texture), opacity(opacity), pos(pos), dimentions(extents)
+TexturedSurface::TexturedSurface(glm::vec3 pos, glm::vec2 extents, float rotationAngle, glm::vec3 rotationAxis, const std::string& texture, bool billBoard, float opacity) : texName(texture), opacity(opacity), pos(pos), dimentions(extents)
 {
-	renderType = (int)(opacity < 1.0F ? (opacity <= 0.0F ? RenderType::NONE : RenderType::TEXTURED_LIT_TRANSPARENT_FOG) : RenderType::TEXTURED_LIT_FOG);
+	if (billBoard)
+	{
+		renderType = (int)RenderType::TEXTURED_LIT_FOG_BILLBOARD;
+	}
+	else
+	{
+		renderType = (int)(opacity < 1.0F ? (opacity <= 0.0F ? RenderType::NONE : RenderType::TEXTURED_LIT_FOG_TRANSPARENT) : RenderType::TEXTURED_LIT_FOG);
+	}
+
 	rotation = glm::mat4(1);
 	setRotation(rotationAngle, rotationAxis);
 	this->texture = new Texture((std::string("textures/") + texture).c_str());

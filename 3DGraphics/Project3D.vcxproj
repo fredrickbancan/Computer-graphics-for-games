@@ -176,8 +176,10 @@
     <ClCompile Include="FlyCamera.cpp" />
     <ClCompile Include="GuiHud.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TexturedModel.cpp" />
     <ClCompile Include="MouseHelper.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
+    <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="TexturedBrush.cpp" />
@@ -188,12 +190,14 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="FlyCamera.h" />
     <ClInclude Include="GuiHud.h" />
+    <ClInclude Include="TexturedModel.h" />
     <ClInclude Include="MouseHelper.h" />
     <ClInclude Include="FrameBuffer.h" />
+    <ClInclude Include="ObjLoader.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Rendering.h" />
     <ClInclude Include="Shaders.h" />
-    <ClInclude Include="TexturedBillboardVert.h" />
     <ClInclude Include="TexturedBrush.h" />
     <ClInclude Include="TexturedSurface.h" />
   </ItemGroup>
@@ -209,10 +213,12 @@
     <Image Include="..\bin\textures\colorbands.png" />
     <Image Include="..\bin\textures\fern.png" />
     <Image Include="..\bin\textures\fern2.png" />
+    <Image Include="..\bin\textures\fur.png" />
     <Image Include="..\bin\textures\glass.png" />
     <Image Include="..\bin\textures\grass.png" />
     <Image Include="..\bin\textures\grass_side.png" />
     <Image Include="..\bin\textures\grid.png" />
+    <Image Include="..\bin\textures\halfsnowrocks.png" />
     <Image Include="..\bin\textures\ice.png" />
     <Image Include="..\bin\textures\icedrip.png" />
     <Image Include="..\bin\textures\image.png" />
@@ -237,15 +243,15 @@
     <Image Include="..\bin\textures\trchimken.png" />
     <Image Include="..\bin\textures\tricewall.png" />
     <Image Include="..\bin\textures\trsnow.png" />
+    <Image Include="..\bin\textures\trsnow2.png" />
     <Image Include="..\bin\textures\trstone.png" />
     <Image Include="..\bin\textures\trstone2.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\bin\shaders\FULLSCREENQUAD.shader" />
     <None Include="..\bin\shaders\PROXIMITY_TESSELLATION.shader" />
-    <None Include="..\bin\shaders\TEXTURED_ALBEDO.shader" />
     <None Include="..\bin\shaders\TEXTURED_LIT_FOG.shader" />
-    <None Include="..\bin\shaders\TEXTURED_LIT_TRANSPARENT_FOG.shader" />
+    <None Include="..\bin\shaders\TEXTURED_LIT_FOG_BILLBOARD.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

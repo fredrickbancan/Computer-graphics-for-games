@@ -1,26 +1,6 @@
 #pragma once
-#include <glm/vec4.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec2.hpp>
+#include "Rendering.h"
 #include <vector>
-enum class RenderType : int
-{
-	NONE,
-	TEXTURED_ALBEDO,
-	TEXTURED_LIT_FOG,
-	TEXTURED_LIT_TRANSPARENT_FOG
-};
-
-struct Vertex
-{
-	Vertex(glm::vec3 pos, glm::vec2 uv, glm::vec3 normal, glm::vec4 color) : pos(pos), uv(uv), normal(normal), color(color) {};
-	glm::vec3 pos;
-	glm::vec2 uv;
-	glm::vec3 normal;
-	glm::vec4 color;
-
-	static constexpr unsigned int sizeInBytes = 12 * sizeof(float);
-};
 
 namespace aie
 {
@@ -28,6 +8,7 @@ namespace aie
 };
 
 /*Singleton class for miscelanious rendering requests for different render types with different shaders*/
+/*Very naieve rendering logic. One draw call per requested object draw. Very inneficient, but simple.*/
 class Renderer
 {
 public:
@@ -39,7 +20,7 @@ public:
 	void drawLightsAsPoints(const std::vector<struct PointLight*> lights);
 	void drawTexturedBrush(class TexturedBrush* tb);
 	void drawTexturedSurface(class TexturedSurface* ts);
-	void drawVerticalBillboard(class TexturedBillboardVert* vb);
+	void drawTexturedModel(class TexturedModel* tm);
 	void doDebugInputs(aie::Input* input);
 	glm::vec2 getRenderFrameSize();
 	void begin();
@@ -48,9 +29,9 @@ public:
 	~Renderer();
 private:
 	void renderFullScreenQuadWithFrameBufTex();
-	void buildDitherTexture();
-	void setUpTexturedBrushRendering();
-	void setUpFullScreenQuadRendering();
+	void initDitherTexture();
+	void initTexturedBrushRendering();
+	void initTexturedQuadRendering();
 	bool debugWireFrameMode = false;
 	bool debugLightMode = false;
 
@@ -63,13 +44,12 @@ private:
 	unsigned int texQuadVaoID = 0;
 	unsigned int texQuadVboID = 0;
 
-	class Shader* shader_NONE = nullptr;
-	class Shader* shader_TEXTURED_ALBEDO = nullptr;
+	class Shader* shader_TEXTURED_LIT_FOG_TESS = nullptr;
 	class Shader* shader_TEXTURED_LIT_FOG = nullptr;
-	class Shader* shader_TEXTURED_LIT_TRANSPARENT_FOG = nullptr;
+	class Shader* shader_TEXTURED_LIT_FOG_BILLBOARD = nullptr;
 	class Shader* shader_FULLSCREENQUAD = nullptr;
 
-	class FrameBuffer* fullScreenBuffer;
+	class FrameBuffer* fullScreenFrameBuffer;
 
 	static Renderer* singletonInstance;
 };

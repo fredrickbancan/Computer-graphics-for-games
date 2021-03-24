@@ -40,9 +40,10 @@ protected:
 	bool initialized = false;
 	std::vector<class TexturedBrush*> texturedBrushes;
 	std::vector<class TexturedSurface*> texturedSurfaces;
-	std::vector<class TexturedBillboardVert*> verticalBillboards;
 	std::vector<class TexturedBrush*> rotatingTexturedBrushes;
 	std::vector<struct PointLight*> pointLights;
+	class TexturedModel* rabbetModel = nullptr;
+	class TexturedModel* dragonModel = nullptr;
 private:
 	static Application3D* singletonInstance;
 };

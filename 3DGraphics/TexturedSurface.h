@@ -10,8 +10,8 @@ namespace aie
 class TexturedSurface
 {
 public:
-	TexturedSurface(float posX, float posY, float posZ, float extentX, float extentY, float rotX, float rotY, float rotZ, const std::string& texture, float opacity = 1.0F);
-	TexturedSurface(glm::vec3 pos, glm::vec2 extents, float rotationAngle, glm::vec3 rotationAxis, const std::string& texture, float opacity = 1.0F);
+	TexturedSurface(float posX, float posY, float posZ, float extentX, float extentY, float rotX, float rotY, float rotZ, const std::string& texture, bool billBoard = false, float opacity = 1.0F);
+	TexturedSurface(glm::vec3 pos, glm::vec2 extents, float rotationAngle, glm::vec3 rotationAxis, const std::string& texture, bool billBoard = false, float opacity = 1.0F);
 	~TexturedSurface();
 	glm::vec3 getPos() { return pos; }
 	glm::vec2 getExtents() { return dimentions; }

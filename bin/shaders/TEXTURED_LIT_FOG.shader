@@ -26,9 +26,7 @@ out float visibility;//for fog
 
 void main()
 {
-	vec4 positionRelativeToCam = viewMatrix * modelMatrix * vec4(position, 1);
-
-	gl_Position = projectionMatrix * positionRelativeToCam;
+	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1);
 
 	float distanceFromCam = length(gl_Position.xyz);
 	visibility = (distanceFromCam - fogStart) / (fogEnd - fogStart);
@@ -41,8 +39,8 @@ void main()
 	//apply nostalgic vertex jitter
 	gl_Position.xy = round(gl_Position.xy * (positionResolution / distanceFromCam)) / (positionResolution / distanceFromCam);
 
-	vTexCoord = uv;
 	vNormal = normalize(normalMatrix * normal);
+	vTexCoord = uv;
 	vWorldPos = (modelMatrix * vec4(position, 1)).xyz;
 
 	vColor = vec4(0);

@@ -31,15 +31,12 @@
     <Filter Include="Resource Files\Textures">
       <UniqueIdentifier>{41617102-7d7f-488c-8553-0275ca4cd70a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Models">
+      <UniqueIdentifier>{ac490811-dca6-4a29-8d7d-76613cc8e951}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MouseHelper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GuiHud.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TexturedBrush.cpp">
@@ -48,17 +45,11 @@
     <ClCompile Include="FlyCamera.cpp">
       <Filter>Source Files\World</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files\World</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer.cpp">
       <Filter>Source Files\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Shaders.cpp">
       <Filter>Source Files\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="Application3D.cpp">
-      <Filter>Source Files\World</Filter>
     </ClCompile>
     <ClCompile Include="FrameBuffer.cpp">
       <Filter>Source Files\Rendering</Filter>
@@ -66,19 +57,28 @@
     <ClCompile Include="TexturedSurface.cpp">
       <Filter>Source Files\World</Filter>
     </ClCompile>
+    <ClCompile Include="ObjLoader.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturedModel.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Application3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiHud.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application3D.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MouseHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GuiHud.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files\World</Filter>
     </ClInclude>
     <ClInclude Include="FlyCamera.h">
       <Filter>Header Files\World</Filter>
@@ -101,8 +101,23 @@
     <ClInclude Include="TexturedSurface.h">
       <Filter>Header Files\World</Filter>
     </ClInclude>
-    <ClInclude Include="TexturedBillboardVert.h">
+    <ClInclude Include="ObjLoader.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedModel.h">
       <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiHud.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseHelper.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -229,21 +244,27 @@
     <Image Include="..\bin\textures\icedrip.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+    <Image Include="..\bin\textures\halfsnowrocks.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\trsnow2.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\bin\textures\fur.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\bin\shaders\TEXTURED_ALBEDO.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
     <None Include="..\bin\shaders\TEXTURED_LIT_FOG.shader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="..\bin\shaders\TEXTURED_LIT_TRANSPARENT_FOG.shader">
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="..\bin\shaders\PROXIMITY_TESSELLATION.shader">
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="..\bin\shaders\FULLSCREENQUAD.shader">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\shaders\TEXTURED_LIT_FOG_BILLBOARD.shader">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>

@@ -2,7 +2,7 @@
 #include "gl_core_4_4.h"
 #include "TexturedBrush.h"
 #include "TexturedSurface.h"
-#include "TexturedBillboardVert.h"
+#include "TexturedModel.h"
 #include "Texture.h"
 #include <string>
 #include "Gizmos.h"
@@ -125,28 +125,43 @@ Renderer::Renderer()
 	std::cout << "OpenGL Shading Language Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 	std::cout << "OpenGL Max Vertex Shader Uniform Components: " << maxVertUniformComps << std::endl;
 
-	shader_NONE = nullptr;
-	shader_TEXTURED_ALBEDO = new Shader("shaders/TEXTURED_ALBEDO.shader");
-	shader_TEXTURED_LIT_FOG = new Shader("shaders/TEXTURED_LIT_FOG.shader", "shaders/PROXIMITY_TESSELLATION.shader");
-	shader_TEXTURED_LIT_TRANSPARENT_FOG = new Shader("shaders/TEXTURED_LIT_TRANSPARENT_FOG.shader");
+	shader_TEXTURED_LIT_FOG_TESS = new Shader("shaders/TEXTURED_LIT_FOG.shader", "shaders/PROXIMITY_TESSELLATION.shader");
+	shader_TEXTURED_LIT_FOG = new Shader("shaders/TEXTURED_LIT_FOG.shader");
+	shader_TEXTURED_LIT_FOG_BILLBOARD = new Shader("shaders/TEXTURED_LIT_FOG_BILLBOARD.shader");
+	shader_FULLSCREENQUAD = new Shader("shaders/FULLSCREENQUAD.shader");
+
+	shader_TEXTURED_LIT_FOG_TESS->bind();
+	shader_TEXTURED_LIT_FOG_TESS->setUniform1i("uTexture", 0);
+	shader_TEXTURED_LIT_FOG_TESS->setUniform1i("ditherTexture", 1);
+	shader_TEXTURED_LIT_FOG_TESS->setUniform1f("detailStart", 2);
+	shader_TEXTURED_LIT_FOG_TESS->setUniform1f("detailEnd", 16);
+	shader_TEXTURED_LIT_FOG_TESS->setUniform1f("fogStart", 20);
+	shader_TEXTURED_LIT_FOG_TESS->setUniform1f("fogEnd", 52);
+	shader_TEXTURED_LIT_FOG_TESS->setUniform1f("positionResolution", 128);
+
 	shader_TEXTURED_LIT_FOG->bind();
 	shader_TEXTURED_LIT_FOG->setUniform1i("uTexture", 0);
 	shader_TEXTURED_LIT_FOG->setUniform1i("ditherTexture", 1);
-	shader_TEXTURED_LIT_FOG->setUniform1f("detailStart", 2);
-	shader_TEXTURED_LIT_FOG->setUniform1f("detailEnd", 16);
 	shader_TEXTURED_LIT_FOG->setUniform1f("fogStart", 20);
 	shader_TEXTURED_LIT_FOG->setUniform1f("fogEnd", 52);
 	shader_TEXTURED_LIT_FOG->setUniform1f("positionResolution", 128);
-	shader_FULLSCREENQUAD = new Shader("shaders/FULLSCREENQUAD.shader");
-	setUpTexturedBrushRendering();
-	setUpFullScreenQuadRendering();
+
+	shader_TEXTURED_LIT_FOG_BILLBOARD->bind();
+	shader_TEXTURED_LIT_FOG_BILLBOARD->setUniform1i("uTexture", 0);
+	shader_TEXTURED_LIT_FOG_BILLBOARD->setUniform1i("ditherTexture", 1);
+	shader_TEXTURED_LIT_FOG_BILLBOARD->setUniform1f("fogStart", 20);
+	shader_TEXTURED_LIT_FOG_BILLBOARD->setUniform1f("fogEnd", 52);
+	shader_TEXTURED_LIT_FOG_BILLBOARD->setUniform1f("positionResolution", 128);
+
+	initTexturedBrushRendering();
+	initTexturedQuadRendering();
+	initDitherTexture();
 }
 
 Renderer::~Renderer()
 {
-	if (shader_TEXTURED_ALBEDO) delete shader_TEXTURED_ALBEDO;
 	if (shader_TEXTURED_LIT_FOG) delete shader_TEXTURED_LIT_FOG;
-	if (shader_TEXTURED_LIT_TRANSPARENT_FOG) delete shader_TEXTURED_LIT_TRANSPARENT_FOG;
+	if (shader_TEXTURED_LIT_FOG_TESS) delete shader_TEXTURED_LIT_FOG_TESS;
 	if (shader_FULLSCREENQUAD) delete shader_FULLSCREENQUAD;
 
 	//deleting buffers
@@ -156,7 +171,7 @@ Renderer::~Renderer()
 
 	glDeleteTextures(1, &ditherTexID);
 
-	delete fullScreenBuffer;
+	delete fullScreenFrameBuffer;
 }
 
 void Renderer::renderFullScreenQuadWithFrameBufTex()
@@ -171,7 +186,7 @@ void Renderer::renderFullScreenQuadWithFrameBufTex()
 	glActiveTexture(GL_TEXTURE0);
 }
 
-void Renderer::buildDitherTexture()
+void Renderer::initDitherTexture()
 {
 	glGenTextures(1, &ditherTexID);
 	glActiveTexture(GL_TEXTURE1);
@@ -189,7 +204,7 @@ void Renderer::buildDitherTexture()
 	glActiveTexture(GL_TEXTURE0);
 }
 
-void Renderer::setUpTexturedBrushRendering()
+void Renderer::initTexturedBrushRendering()
 {
 	//making vao
 	glGenVertexArrays(1, &texBrushVaoID);
@@ -221,14 +236,11 @@ void Renderer::setUpTexturedBrushRendering()
 	//color
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 4, GL_FLOAT, false, Vertex::sizeInBytes, (const void*)(8 * sizeof(float)));
-
-	//for teselation (setting to quads)
-	glPatchParameteri(GL_PATCH_VERTICES, 4);
 }
 
-void Renderer::setUpFullScreenQuadRendering()
+void Renderer::initTexturedQuadRendering()
 {
-	fullScreenBuffer = new FrameBuffer(0.53333333333F);
+	fullScreenFrameBuffer = new FrameBuffer(0.53333333333F);
 
 	//making vao
 	glGenVertexArrays(1, &texQuadVaoID);
@@ -255,12 +267,11 @@ void Renderer::setUpFullScreenQuadRendering()
 	//color
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 4, GL_FLOAT, false, Vertex::sizeInBytes, (const void*)(8 * sizeof(float)));
-	buildDitherTexture();
 }
 
 void Renderer::onWindowResize(int width, int height)
 {
-	fullScreenBuffer->resize(width, height);
+	fullScreenFrameBuffer->resize(width, height);
 }
 
 void Renderer::drawLightsAsPoints(const std::vector<struct PointLight*> lights)
@@ -307,31 +318,25 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 
 	switch ((RenderType)tb->getRenderType())
 	{
-
 	case RenderType::NONE:
 		break;
 
 	case RenderType::TEXTURED_ALBEDO:
-		shader_TEXTURED_ALBEDO->bind();
 		break;
-
 	case RenderType::TEXTURED_LIT_FOG:
-		shader_TEXTURED_LIT_FOG->bind();
-		shader_TEXTURED_LIT_FOG->setUniformMat4fArray("pointLights", iter, &pointLightMats[0][0][0]);
-		shader_TEXTURED_LIT_FOG->setUniform1i("activeLights", iter);
-		shader_TEXTURED_LIT_FOG->setUniformMat4f("modelMatrix", modelMatrix);
-		shader_TEXTURED_LIT_FOG->setUniformMat3f("normalMatrix", glm::mat3(glm::transpose(glm::inverse(modelMatrix))));
-		shader_TEXTURED_LIT_FOG->setUniformMat4f("viewMatrix", Application3D::getInstance()->getViewMatrix());
-		shader_TEXTURED_LIT_FOG->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
-		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
+		//for teselation (setting to quads)
+		glPatchParameteri(GL_PATCH_VERTICES, 4);
+		shader_TEXTURED_LIT_FOG_TESS->bind();
+		shader_TEXTURED_LIT_FOG_TESS->setUniformMat4fArray("pointLights", iter, &pointLightMats[0][0][0]);
+		shader_TEXTURED_LIT_FOG_TESS->setUniform1i("activeLights", iter);
+		shader_TEXTURED_LIT_FOG_TESS->setUniformMat4f("modelMatrix", modelMatrix);
+		shader_TEXTURED_LIT_FOG_TESS->setUniformMat3f("normalMatrix", glm::mat3(glm::transpose(glm::inverse(modelMatrix))));
+		shader_TEXTURED_LIT_FOG_TESS->setUniformMat4f("viewMatrix", Application3D::getInstance()->getViewMatrix());
+		shader_TEXTURED_LIT_FOG_TESS->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
+		shader_TEXTURED_LIT_FOG_TESS->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
 		glDrawArrays(GL_PATCHES, 0, 24);
 		break;
-
-	case RenderType::TEXTURED_LIT_TRANSPARENT_FOG:
-		shader_TEXTURED_LIT_TRANSPARENT_FOG->bind();
-		break;
-
-	default:
+	case RenderType::TEXTURED_LIT_FOG_TRANSPARENT:
 		break;
 	}
 	if (debugWireFrameMode)
@@ -364,111 +369,90 @@ void Renderer::drawTexturedSurface(TexturedSurface* ts)
 	glm::vec2 exts = ts->getExtents();
 	float alpha = ts->getOpacity();
 	glm::mat4 modelMatrix = glm::mat4(1);
-	modelMatrix = glm::translate(modelMatrix, pos);
+	glm::mat4 modelMatNoRot = glm::mat4(1);
+	modelMatNoRot = modelMatrix = glm::translate(modelMatrix, pos);
 	modelMatrix *= ts->getRotationMatrix();
 	modelMatrix = glm::scale(modelMatrix, glm::vec3(exts.x * 2.0F, exts.y * 2.0F, 1));
-
+	modelMatNoRot = glm::scale(modelMatNoRot, glm::vec3(exts.x * 2.0F, exts.y * 2.0F, 1));
 	glDisable(GL_CULL_FACE);
 	switch ((RenderType)ts->getRenderType())
 	{
-
 	case RenderType::NONE:
 		break;
-
 	case RenderType::TEXTURED_ALBEDO:
-		shader_TEXTURED_ALBEDO->bind();
 		break;
-
 	case RenderType::TEXTURED_LIT_FOG:
-		shader_TEXTURED_LIT_FOG->bind();
-		shader_TEXTURED_LIT_FOG->setUniformMat4fArray("pointLights", iter, &pointLightMats[0][0][0]);
-		shader_TEXTURED_LIT_FOG->setUniform1i("activeLights", iter);
-		shader_TEXTURED_LIT_FOG->setUniformMat4f("modelMatrix", modelMatrix);
-		shader_TEXTURED_LIT_FOG->setUniformMat3f("normalMatrix", glm::mat3(glm::transpose(glm::inverse(modelMatrix))));
-		shader_TEXTURED_LIT_FOG->setUniformMat4f("viewMatrix", Application3D::getInstance()->getViewMatrix());
-		shader_TEXTURED_LIT_FOG->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
-		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
+		shader_TEXTURED_LIT_FOG_TESS->bind();
+		shader_TEXTURED_LIT_FOG_TESS->setUniformMat4fArray("pointLights", iter, &pointLightMats[0][0][0]);
+		shader_TEXTURED_LIT_FOG_TESS->setUniform1i("activeLights", iter);
+		shader_TEXTURED_LIT_FOG_TESS->setUniformMat4f("modelMatrix", modelMatrix);
+		shader_TEXTURED_LIT_FOG_TESS->setUniformMat3f("normalMatrix", glm::mat3(glm::transpose(glm::inverse(modelMatrix))));
+		shader_TEXTURED_LIT_FOG_TESS->setUniformMat4f("viewMatrix", Application3D::getInstance()->getViewMatrix());
+		shader_TEXTURED_LIT_FOG_TESS->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
+		shader_TEXTURED_LIT_FOG_TESS->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
 		glDrawArrays(GL_PATCHES, 0, 4);
 		break;
 
-	case RenderType::TEXTURED_LIT_TRANSPARENT_FOG:
-		shader_TEXTURED_LIT_TRANSPARENT_FOG->bind();
+	case RenderType::TEXTURED_LIT_FOG_BILLBOARD:
+		shader_TEXTURED_LIT_FOG_BILLBOARD->bind();
+		shader_TEXTURED_LIT_FOG_BILLBOARD->setUniformMat4fArray("pointLights", iter, &pointLightMats[0][0][0]);
+		shader_TEXTURED_LIT_FOG_BILLBOARD->setUniform1i("activeLights", iter);
+		shader_TEXTURED_LIT_FOG_BILLBOARD->setUniformMat4f("modelMatrix", modelMatNoRot);
+		shader_TEXTURED_LIT_FOG_BILLBOARD->setUniformMat3f("normalMatrix", glm::mat3(glm::transpose(glm::inverse(modelMatrix))));
+		shader_TEXTURED_LIT_FOG_BILLBOARD->setUniformMat4f("viewMatrix", Application3D::getInstance()->getViewMatrix());
+		shader_TEXTURED_LIT_FOG_BILLBOARD->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
+		glDrawArrays(GL_QUADS, 0, 4);
 		break;
-
-	default:
+	case RenderType::TEXTURED_LIT_FOG_TRANSPARENT:
 		break;
 	}
-	if (debugWireFrameMode)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_CULL_FACE);
 }
 
-void Renderer::drawVerticalBillboard(TexturedBillboardVert* vb)
+void Renderer::drawTexturedModel(TexturedModel* tm)
 {
 	glm::mat4 pointLightMats[maxLights]{ glm::mat4(0) };
 
 	std::vector<PointLight*> pLights = Application3D::getInstance()->getPointLights();
 
 	int iter = 0;
+
 	for (std::vector<PointLight*>::iterator i = pLights.begin(); i != pLights.end(); ++i)
 	{
 		pointLightMats[iter] = (*i)->getMatrix();
 		if (++iter >= maxLights) break;
 	}
+
 	if (debugWireFrameMode)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-
-	glBindVertexArray(texQuadVaoID);
-	vb->bindTexture(0);
+	tm->bindVAO();
+	tm->bindTexture();
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, ditherTexID);
-	glm::vec3 pos = vb->getPos();
-	glm::vec2 exts = vb->getExtents();
-	float alpha = vb->getOpacity();
+
+	glm::vec3 pos = tm->getPos();
+	glm::vec3 scale = tm->getScale();
+
 	glm::mat4 modelMatrix = glm::mat4(1);
 	modelMatrix = glm::translate(modelMatrix, pos);
-	modelMatrix *= vb->getRotationMatrix();
-	modelMatrix = glm::scale(modelMatrix, glm::vec3(exts.x * 2.0F, exts.y * 2.0F, 1));
+	modelMatrix *= tm->getRotation();
+	modelMatrix = glm::scale(modelMatrix, scale);
 
-	glm::mat4 viewMatNoVertRot = Application3D::getInstance()->getViewMatrix();
+	shader_TEXTURED_LIT_FOG->bind();
+	shader_TEXTURED_LIT_FOG->setUniformMat4fArray("pointLights", iter, &pointLightMats[0][0][0]);
+	shader_TEXTURED_LIT_FOG->setUniform1i("activeLights", iter);
+	shader_TEXTURED_LIT_FOG->setUniformMat4f("modelMatrix", modelMatrix);
+	shader_TEXTURED_LIT_FOG->setUniformMat3f("normalMatrix", glm::mat3(glm::transpose(glm::inverse(modelMatrix))));
+	shader_TEXTURED_LIT_FOG->setUniformMat4f("viewMatrix", Application3D::getInstance()->getViewMatrix());
+	shader_TEXTURED_LIT_FOG->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
 	glDisable(GL_CULL_FACE);
-	switch ((RenderType)vb->getRenderType())
-	{
-
-	case RenderType::NONE:
-		break;
-
-	case RenderType::TEXTURED_ALBEDO:
-		shader_TEXTURED_ALBEDO->bind();
-		break;
-
-	case RenderType::TEXTURED_LIT_FOG:
-		shader_TEXTURED_LIT_FOG->bind();
-		shader_TEXTURED_LIT_FOG->setUniformMat4fArray("pointLights", iter, &pointLightMats[0][0][0]);
-		shader_TEXTURED_LIT_FOG->setUniform1i("activeLights", iter);
-		shader_TEXTURED_LIT_FOG->setUniformMat4f("modelMatrix", modelMatrix);
-		shader_TEXTURED_LIT_FOG->setUniformMat3f("normalMatrix", glm::mat3(glm::transpose(glm::inverse(modelMatrix))));
-		shader_TEXTURED_LIT_FOG->setUniformMat4f("viewMatrix", viewMatNoVertRot);
-		shader_TEXTURED_LIT_FOG->setUniformMat4f("projectionMatrix", Application3D::getInstance()->getProjectionMatrix());
-		shader_TEXTURED_LIT_FOG->setUniform3f("camWorldPos", Application3D::getInstance()->getCamPos());
-		glDrawArrays(GL_PATCHES, 0, 4);
-		break;
-
-	case RenderType::TEXTURED_LIT_TRANSPARENT_FOG:
-		shader_TEXTURED_LIT_TRANSPARENT_FOG->bind();
-		break;
-
-	default:
-		break;
-	}
-	if (debugWireFrameMode)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	glActiveTexture(GL_TEXTURE0);
+	glDrawElements(GL_TRIANGLES, tm->getIndicesCount(), GL_UNSIGNED_INT, 0);
 	glEnable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glActiveTexture(GL_TEXTURE0);
 }
 
 void Renderer::doDebugInputs(Input* input)
@@ -479,17 +463,17 @@ void Renderer::doDebugInputs(Input* input)
 
 glm::vec2 Renderer::getRenderFrameSize()
 {
-	return fullScreenBuffer->getSize();
+	return fullScreenFrameBuffer->getSize();
 }
 
 void Renderer::begin()
 {
-	fullScreenBuffer->bind();
-	fullScreenBuffer->clear();
+	fullScreenFrameBuffer->bind();
+	fullScreenFrameBuffer->clear();
 }
 
 void Renderer::end()
 {
-	fullScreenBuffer->unBindAndBindTexture();
+	fullScreenFrameBuffer->unBindAndBindTexture();
 	renderFullScreenQuadWithFrameBufTex();
 }
