@@ -146,14 +146,14 @@ bool Application3D::startup()
 	pointLights.push_back(new PointLight({ 14, 0.5F, 0 }, { 0.152F, 0.611F, 0.568F }, 4, 6, 0.7F));//rotating brush area light bottom green ish
 	pointLights.push_back(new PointLight({ 12, wallSize * 2 + 1, 0 }, { 0.949, 0.780, 0.352 }, 2, 3, 0.9F));//rotating brush area candle light top 
 	pointLights.push_back(new PointLight({ 11, 2, 5}, { 0.949, 0.780, 0.352 }, 1, 4, 0.9F));//rotating brush area candle light top 
-	pointLights.push_back(new PointLight({ 2, 3, -9}, { 0.949, 0.04, 0.06 }, 3, 8, 0.9F));//dragon light
+	pointLights.push_back(new PointLight({ 2, 2.5, -11}, { 0.849, 0.54, 0.36 }, 4, 9, 0.8F));//dragon light
 
 	rabbetModel = new TexturedModel("rabbet.obj", "grid.png");
 	rabbetModel->setScale(1, 1, 1);
 	rabbetModel->setPos(0,2.49,0);
 	rabbetModel->setRotation(0, 180, 0);
 
-	dragonModel = new TexturedModel("dragon.obj", "trstone.png");
+	dragonModel = new TexturedModel("dragon.obj", "leafywall.png");
 	dragonModel->setScale(3, 3, 3);
 	dragonModel->setPos(2, 1.5, -13);
 	dragonModel->setRotation(0, 45, 0);
@@ -267,7 +267,6 @@ void Application3D::doWorldFixedUpdate(float timeStep)
 void Application3D::doWorldRenderUpdate(float timeStep)
 {
 	Gizmos::clear();// wipe the gizmos clean for this frame
-	Gizmos::addTransform(mat4(1));// add a transform so that we can see the axis
 	guiHud->onWorldRenderUpdate(timeStep);
 	Renderer::getInstance()->drawLightsAsPoints(pointLights);
 

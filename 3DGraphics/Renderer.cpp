@@ -240,7 +240,7 @@ void Renderer::initTexturedBrushRendering()
 
 void Renderer::initTexturedQuadRendering()
 {
-	fullScreenFrameBuffer = new FrameBuffer(0.53333333333F);
+	fullScreenFrameBuffer = new FrameBuffer(0.23333333333F);
 
 	//making vao
 	glGenVertexArrays(1, &texQuadVaoID);

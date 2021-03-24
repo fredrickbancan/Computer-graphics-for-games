@@ -40,6 +40,7 @@ void GuiHud::draw()
 	renderer->drawText(font, "Resolution: ", 0, refApp->getWindowHeight() - 200);
 	renderer->drawText(font, to_string(res.x).c_str() , 0, refApp->getWindowHeight() - 225);
 	renderer->drawText(font, to_string(res.y).c_str() , 0, refApp->getWindowHeight() - 250);
+	renderer->drawText(font, (string("Fps: ") + to_string(refApp->getFPS())).c_str(), 0, refApp->getWindowHeight() - 275);
 	renderer->setRenderColour(1,1,1,1);
 	renderer->end();
 
