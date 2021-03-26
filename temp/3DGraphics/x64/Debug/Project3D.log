@@ -1,19 +1,8 @@
-﻿  Application3D.cpp
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(103,66): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(106,64): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(109,147): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(109,132): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(109,104): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(109,186): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(109,64): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(110,118): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(111,114): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(112,113): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(142,70): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(153,30): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(200,78): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(200,75): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(200,70): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(200,47): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+﻿  Renderer.cpp
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Renderer.cpp(287,71): warning C4305: 'argument': truncation from 'double' to 'float'
+  TexturedBrush.cpp
+  TexturedModel.cpp
+  TexturedSurface.cpp
+  main.cpp
+  Generating Code...
   Project3D.vcxproj -> C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\temp\3DGraphics\x64\Debug\3DGraphics.exe
