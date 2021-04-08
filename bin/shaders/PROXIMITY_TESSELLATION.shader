@@ -24,10 +24,10 @@ out Tess
 
 void main(void)
 {
-    
-
     if (gl_InvocationID == 0)
     {
+        //Set level of teselation based on distance from camera and size of face.
+
         vec3 avgCenter = (vWorldPos[0] + vWorldPos[1] + vWorldPos[2] + vWorldPos[3]) / 4;
         float distToFace = distance(camWorldPos, avgCenter);
         float detail = distToFace < detailStart ? 1 : distToFace < detailEnd ? 0.5 : 0;
@@ -115,11 +115,11 @@ void main(void)
     distanceFromCam = clamp(gl_Position.w, -1, 1000);
     gl_Position.xy = round(gl_Position.xy * (positionResolution / distanceFromCam )) / (positionResolution / distanceFromCam );
 
-    //apply lighting to each tesselated vertex
     vec3 vertToLight;
     float dotToLight;
     float distToLight;
     float power;
+    //apply lighting to each tesselated vertex
     for (int i = 0; i < activeLights; i++)
     {
         vertToLight = pointLights[i][0].xyz - vWorldPos;

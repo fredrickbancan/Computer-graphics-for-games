@@ -4,6 +4,7 @@
 #include <glm/mat4x4.hpp>
 #include "Input.h"
 #include <vector>
+/*static class for containing the base logic for the application*/
 class Application3D : public aie::Application 
 {
 public:
@@ -11,14 +12,27 @@ public:
 	static Application3D* getInstance() { return singletonInstance; }
 	static void deleteInstance() { if (singletonInstance) { delete singletonInstance; } }
 
+	/*Initialize and build game environment*/
 	virtual bool startup();
+
+	/*Manage memory and shut down application*/
 	virtual void shutdown();
+
+	/*Update input and game objects each frame*/
 	virtual void update(float deltaTime);
+
+	/*Render scene*/
 	virtual void draw();
 
+	/*Does work updates in succession if needed to catch up with current time. Unless not enough time has passed.*/
 	void doWorldFixedUpdateLoop(float deltaTime);
+
+	/*Update game logic which only needs to be updated with a timestep such as render requests and physics*/
 	void doWorldFixedUpdate(float timeStep);
+
+	/*Request draw calls for gameobjects on each fixed update instead of each frame. Slightly more efficient and performant.*/
 	void doWorldRenderUpdate(float timeStep);
+
 	void pauseWorld();
 	void unPauseWorld();
 	void onWindowResize(int width, int height);
@@ -36,6 +50,8 @@ protected:
 	bool hasDoneRenderUpdate = false;
 	bool paused = false;
 	float percentageToNextTick = 1.0F;
+
+	/*Duration of time to pass between each fixed update*/
 	float timeStep = 0.0333333F;
 	bool initialized = false;
 	std::vector<class TexturedBrush*> texturedBrushes;

@@ -28,14 +28,16 @@ void main()
 {
 	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1);
 
+	//Calculate visibility for vertex based on distance from camera
 	float distanceFromCam = length(gl_Position.xyz);
 	visibility = (distanceFromCam - fogStart) / (fogEnd - fogStart);
 	visibility = clamp(visibility, 0.0, 1.0);
 	visibility = 1.0 - visibility;
 	visibility *= visibility;
 
-
+	//recalculate distance for vertex for vertex jitter 
 	distanceFromCam = clamp(gl_Position.w, -0.1, 1000);
+
 	//apply nostalgic vertex jitter
 	gl_Position.xy = round(gl_Position.xy * (positionResolution / distanceFromCam)) / (positionResolution / distanceFromCam);
 
@@ -43,12 +45,12 @@ void main()
 	vTexCoord = uv;
 	vWorldPos = (modelMatrix * vec4(position, 1)).xyz;
 
+	//Apply vertex lighting
 	vColor = vec4(0);
 	vec3 vertToLight;
 	float dotToLight;
 	float distToLight;
 	float power;
-
 	for (int i = 0; i < activeLights; i++)
 	{
 		vertToLight = pointLights[i][0].xyz - vWorldPos;

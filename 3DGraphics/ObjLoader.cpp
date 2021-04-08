@@ -105,6 +105,8 @@ void ObjLoader::getModelDataFromObjFile(const string& fileName, Vertex*& outVert
 	vec2* orderedUvs;
 	vec3* orderedNormals;
 	vertlist resultVertices{};
+
+	//process each line based on token
 	while (getline(stream, currentLine))
 	{
 		if (currentLine.find("v ") == 0)

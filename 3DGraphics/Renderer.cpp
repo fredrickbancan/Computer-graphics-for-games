@@ -276,7 +276,6 @@ void Renderer::onWindowResize(int width, int height)
 
 void Renderer::drawLightsAsPoints(const std::vector<struct PointLight*> lights)
 {
-	
 	if (!debugLightMode)return;
 	for (std::vector<PointLight*>::const_iterator i = lights.begin(); i != lights.end(); ++i)
 	{
@@ -290,10 +289,12 @@ void Renderer::drawLightsAsPoints(const std::vector<struct PointLight*> lights)
 
 void Renderer::drawTexturedBrush(TexturedBrush* tb)
 {
+	//Array of matrices for storing point light data
 	glm::mat4 pointLightMats[maxLights]{glm::mat4(0)};
 
 	std::vector<PointLight*> pLights = Application3D::getInstance()->getPointLights();
 
+	//Fill point light matrix array
 	int iter = 0;
 	for (std::vector<PointLight*>::iterator i = pLights.begin(); i != pLights.end(); ++i)
 	{
@@ -304,6 +305,7 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 	if(debugWireFrameMode)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
 
+	//bind textured brush vao, texture and set up matrices for rendering
 	glBindVertexArray(texBrushVaoID);
 	tb->bindTexture(0);
 	glActiveTexture(GL_TEXTURE1);
@@ -316,6 +318,7 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 	modelMatrix *= tb->getRotationMatrix();
 	modelMatrix = glm::scale(modelMatrix, exts * 2.0F);
 
+	//set uniforms and render textured brush based on its render type (only one works for now.)
 	switch ((RenderType)tb->getRenderType())
 	{
 	case RenderType::NONE:
@@ -347,10 +350,12 @@ void Renderer::drawTexturedBrush(TexturedBrush* tb)
 
 void Renderer::drawTexturedSurface(TexturedSurface* ts)
 {
+	//Array of matrices for storing point light data
 	glm::mat4 pointLightMats[maxLights]{ glm::mat4(0) };
 
 	std::vector<PointLight*> pLights = Application3D::getInstance()->getPointLights();
 
+	//Fill light matrix array
 	int iter = 0;
 	for (std::vector<PointLight*>::iterator i = pLights.begin(); i != pLights.end(); ++i)
 	{
@@ -360,7 +365,7 @@ void Renderer::drawTexturedSurface(TexturedSurface* ts)
 	if (debugWireFrameMode)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-
+	//bind textured surface vao, texture and set up matrices for rendering
 	glBindVertexArray(texQuadVaoID);
 	ts->bindTexture(0);
 	glActiveTexture(GL_TEXTURE1);
@@ -374,6 +379,8 @@ void Renderer::drawTexturedSurface(TexturedSurface* ts)
 	modelMatrix *= ts->getRotationMatrix();
 	modelMatrix = glm::scale(modelMatrix, glm::vec3(exts.x * 2.0F, exts.y * 2.0F, 1));
 	modelMatNoRot = glm::scale(modelMatNoRot, glm::vec3(exts.x * 2.0F, exts.y * 2.0F, 1));
+	
+	//set uniforms and Render based on render type (only 2 work for now)
 	glDisable(GL_CULL_FACE);
 	switch ((RenderType)ts->getRenderType())
 	{
@@ -413,12 +420,13 @@ void Renderer::drawTexturedSurface(TexturedSurface* ts)
 
 void Renderer::drawTexturedModel(TexturedModel* tm)
 {
+	//Array of matrices for storing point light data
 	glm::mat4 pointLightMats[maxLights]{ glm::mat4(0) };
 
 	std::vector<PointLight*> pLights = Application3D::getInstance()->getPointLights();
 
+	//Fill light matrix array
 	int iter = 0;
-
 	for (std::vector<PointLight*>::iterator i = pLights.begin(); i != pLights.end(); ++i)
 	{
 		pointLightMats[iter] = (*i)->getMatrix();
@@ -428,6 +436,7 @@ void Renderer::drawTexturedModel(TexturedModel* tm)
 	if (debugWireFrameMode)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+	//Bind vao and texure and set matrices for rendering
 	tm->bindVAO();
 	tm->bindTexture();
 	glActiveTexture(GL_TEXTURE1);
@@ -441,6 +450,7 @@ void Renderer::drawTexturedModel(TexturedModel* tm)
 	modelMatrix *= tm->getRotation();
 	modelMatrix = glm::scale(modelMatrix, scale);
 
+	//set uniforms and render
 	shader_TEXTURED_LIT_FOG->bind();
 	shader_TEXTURED_LIT_FOG->setUniformMat4fArray("pointLights", iter, &pointLightMats[0][0][0]);
 	shader_TEXTURED_LIT_FOG->setUniform1i("activeLights", iter);

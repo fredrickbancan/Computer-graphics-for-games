@@ -1,8 +1,90 @@
-﻿  Renderer.cpp
-C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Renderer.cpp(287,71): warning C4305: 'argument': truncation from 'double' to 'float'
-  TexturedBrush.cpp
+﻿  Application3D.cpp
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(103,66): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(106,64): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(109,147): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(109,132): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(109,104): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(109,186): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(109,64): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(110,118): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(111,114): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(112,113): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(142,70): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(153,30): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(200,78): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(200,75): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(200,70): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Application3D.cpp(200,47): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  Camera.cpp
+  FlyCamera.cpp
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\FlyCamera.cpp(22,79): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\FlyCamera.cpp(23,79): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\FlyCamera.cpp(24,83): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+  FrameBuffer.cpp
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\FrameBuffer.cpp(15,20): warning C4244: '=': conversion from 'T' to 'unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\FrameBuffer.cpp(16,21): warning C4244: '=': conversion from 'T' to 'unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\FrameBuffer.cpp(40,56): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\FrameBuffer.cpp(40,51): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\FrameBuffer.cpp(52,56): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\FrameBuffer.cpp(52,51): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\FrameBuffer.cpp(63,29): warning C4244: '=': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\FrameBuffer.cpp(64,31): warning C4244: '=': conversion from 'float' to 'unsigned int', possible loss of data
+  GuiHud.cpp
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(33,93): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(34,92): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(35,77): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(36,69): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(37,82): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(38,82): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(39,82): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(40,72): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(41,83): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(42,83): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\GuiHud.cpp(43,113): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  MouseHelper.cpp
+  ObjLoader.cpp
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\ObjLoader.cpp(168,41): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\ObjLoader.cpp(169,38): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Renderer.cpp
+C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\3DGraphics\Renderer.cpp(286,71): warning C4305: 'argument': truncation from 'double' to 'float'
+  Shaders.cpp
   TexturedModel.cpp
-  TexturedSurface.cpp
   main.cpp
   Generating Code...
   Project3D.vcxproj -> C:\Users\disckord\Desktop\Computer Graphics\Workspace\3DGraphics\temp\3DGraphics\x64\Debug\3DGraphics.exe

@@ -2,6 +2,7 @@
 #include "glm/vec3.hpp"
 #include "glm/ext.hpp"
 
+/*Class for a 3D camera with projection and view matrices*/
 class Camera
 {
 public:
@@ -16,13 +17,19 @@ public:
 	float getYaw() { return yaw; }
 	float getPitch() { return pitch; }
 	void lookAt(glm::vec3 pos, float ptnt = 1.0F);
+
+	/*Update the directional vectors of the camera based on position rotations. ptnt = percentage to next tick, for interpolating*/
 	void updateVectors(float ptnt = 1.0F);
+
 	glm::mat4 getViewMatrix() { return viewMatrix; }
 	glm::mat4 getProjectionMatrix() { return projectionMatrix; }
 	void setFov(float fov);
 	void setNearPlane(float np);
 	void setFarPlane(float fp);
+
+	/*Calcultes projection matrix. Should be called each time the aspect ratio, fov or draw distance changes.*/
 	void makeProjectionMatrix();
+
 	void setAspectRatio(float ar) { aspectRatio = ar; makeProjectionMatrix(); }
 protected:
 	float farPlane = 1000.0F;

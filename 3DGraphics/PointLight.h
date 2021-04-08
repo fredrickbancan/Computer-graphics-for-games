@@ -1,6 +1,8 @@
 #pragma once
 #include "glm/vec3.hpp"
 #include "glm/mat4x4.hpp"
+
+/*Simple point light struct which can be stored as a matrix4*/
 struct PointLight
 {
 	PointLight(glm::vec3 pos, glm::vec3 color, float fallOffStart, float fallOffEnd, float luminance) : pos(pos), color(color), fallOffStart(fallOffStart), fallOffEnd(fallOffEnd), luminance(luminance) {};

@@ -79,10 +79,12 @@ glm::vec2 FrameBuffer::getSize()
 
 void FrameBuffer::setUpFrameBuffer()
 {
+    //gen buffers
     glGenFramebuffers(1, &frameBufferID);
     glGenTextures(1, &textureID);
     glGenRenderbuffers(1, &depthBufferID);
 
+    //set up color output
     glBindTexture(GL_TEXTURE_2D, textureID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -90,13 +92,16 @@ void FrameBuffer::setUpFrameBuffer()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
+    //set up depth output
     glBindRenderbuffer(GL_RENDERBUFFER, depthBufferID);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width , height);
 
+    //attach outputs
     glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBufferID);
 
+    //unbind
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

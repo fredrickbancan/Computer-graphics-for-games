@@ -90,6 +90,7 @@ ShaderProgramSource Shader::parseVertFragShaderFile(const std::string& vertFragP
 	std::stringstream ss[2];
 	ShaderProgramSource result;
 
+	//process each line and store source code based on token
 	while (getline(stream, line))
 	{
 		if (line.find("#shader") != std::string::npos)
@@ -138,6 +139,7 @@ ShaderProgramSource Shader::parseTessShaderFile(const std::string& tessPath, Sha
 	std::stringstream ss[2];
 	ShaderProgramSource result = fragVertSource;
 
+	//process each line and store source code based on token
 	while (getline(stream, line))
 	{
 		if (line.find("#shader") != std::string::npos)

@@ -1,6 +1,7 @@
 #pragma once
 #include "Camera.h"
 
+/*Class for movable 3d Camera*/
 class FlyCamera : public Camera
 {
 public:

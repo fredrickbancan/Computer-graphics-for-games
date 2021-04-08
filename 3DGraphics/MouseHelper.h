@@ -1,5 +1,6 @@
 #pragma once
 
+/*Static class for helping to accurately get mouse deltas for camera*/
 class MouseHelper
 {
 public:

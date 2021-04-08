@@ -19,6 +19,7 @@ struct ShaderProgramSource
     bool hasTessEval = false;
 };
 
+/*Class for abstraction of shader code*/
 class Shader
 {
 private:

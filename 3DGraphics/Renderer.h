@@ -16,20 +16,40 @@ public:
 	static Renderer* getInstance() { return singletonInstance; }
 	static void close() { if (singletonInstance)delete singletonInstance; }
 
+	/*Resizes viewport and relevant fbos*/
 	void onWindowResize(int width, int height);
+
+	/*Draws each light in provided light vector as a point*/
 	void drawLightsAsPoints(const std::vector<struct PointLight*> lights);
+
+	/*Draws provided textured brush*/
 	void drawTexturedBrush(class TexturedBrush* tb);
+
+	/*Draws provided textured surface*/
 	void drawTexturedSurface(class TexturedSurface* ts);
+
+	/*Draws provided textured model*/
 	void drawTexturedModel(class TexturedModel* tm);
+
+	/*Detects input for debug options such as wireframe and light points*/
 	void doDebugInputs(aie::Input* input);
+
+	/*Returns dimentions of render frame*/
 	glm::vec2 getRenderFrameSize();
+
+	/*Prepares renderer for rendering, binds offscreen fbo*/
 	void begin();
+
+	/*Completes rendering, binds origional fbo*/
 	void end();
 	Renderer();
 	~Renderer();
 private:
 	void renderFullScreenQuadWithFrameBufTex();
+	
+	/*Builds bayer matrix dithering texture*/
 	void initDitherTexture();
+
 	void initTexturedBrushRendering();
 	void initTexturedQuadRendering();
 	bool debugWireFrameMode = false;

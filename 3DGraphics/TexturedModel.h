@@ -9,6 +9,7 @@ namespace aie
 	class Texture;
 }
 
+/*Class for a Loaded obj model with applied texture*/
 class TexturedModel
 {
 public:
